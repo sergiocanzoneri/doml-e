@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<!--
+    Copyright (c) 2007, 2010 BMW Car IT, Technische Universitaet Muenchen, and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    https://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        BMW Car IT - Initial API and implementation
+        Technische Universitaet Muenchen - Major refactoring and extension
+ -->
+
+<plugin>
+
+   <extension point="org.eclipse.ui.newWizards">
+      <category
+            id="org.eclipse.emf.ecore.Wizard.category.ID"
+            name="%_UI_Wizard_category"/>
+      <wizard
+            id="org.eclipse.emf.edapt.declaration.presentation.DeclarationModelWizardID"
+            name="%_UI_DeclarationModelWizard_label"
+            class="org.eclipse.emf.edapt.declaration.presentation.DeclarationModelWizard"
+            category="org.eclipse.emf.ecore.Wizard.category.ID"
+            icon="icons/full/obj16/DeclarationModelFile.gif">
+         <description>%_UI_DeclarationModelWizard_description</description>
+         <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
+   </extension>
+
+   <extension point="org.eclipse.ui.editors">
+      <editor
+            id="org.eclipse.emf.edapt.declaration.presentation.DeclarationEditorID"
+            name="%_UI_DeclarationEditor_label"
+            icon="icons/full/obj16/DeclarationModelFile.gif"
+            extensions="declaration"
+            class="org.eclipse.emf.edapt.declaration.presentation.DeclarationEditor"
+            contributorClass="org.eclipse.emf.edapt.declaration.presentation.DeclarationActionBarContributor">
+      </editor>
+   </extension>
+
+</plugin>

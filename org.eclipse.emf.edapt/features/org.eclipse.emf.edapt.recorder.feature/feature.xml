@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.eclipse.emf.edapt.recorder.feature"
+      label="Edapt Recorder Feature"
+      version="1.5.0.qualifier"
+      provider-name="Eclipse Modeling Project">
+
+   <description url="http://www.eclipse.org/edapt">
+      Edapt eases the coupled evolution of EMF metamodels and models.
+   </description>
+
+   <copyright>
+      Copyright (c) 2007, 2010 BMW Car IT, Technische Universitaet
+Muenchen, and others.
+   </copyright>
+
+   <license url="%licenseURL">
+      %license
+   </license>
+
+   <url>
+      <discovery label="Edapt project site" url="http://www.eclipse.org/edapt/"/>
+   </url>
+
+   <requires>
+      <import feature="org.eclipse.emf.edapt.runtime.feature" version="0.3.0"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.emf.ecore.editor"/>
+      <import plugin="org.eclipse.emf.edapt.common"/>
+      <import plugin="org.eclipse.emf.edapt.declaration"/>
+      <import plugin="org.eclipse.emf.edit"/>
+      <import plugin="org.eclipse.emf.ecore"/>
+      <import plugin="org.eclipse.emf.ecore.edit"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.emf.edit.ui"/>
+      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.eclipse.emf.ecore.xmi"/>
+      <import plugin="org.eclipse.emf.edapt.history"/>
+      <import plugin="org.junit"/>
+      <import plugin="org.eclipse.core.expressions"/>
+      <import plugin="org.eclipse.jdt.ui"/>
+      <import plugin="org.eclipse.jdt.core"/>
+      <import plugin="org.eclipse.ui.forms"/>
+      <import plugin="org.eclipse.pde.ui" version="3.5.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.emf.edapt.migration"/>
+      <import plugin="org.eclipse.debug.core"/>
+      <import plugin="org.eclipse.jdt.launching"/>
+      <import plugin="org.eclipse.debug.ui"/>
+      <import plugin="org.eclipse.jdt.debug.ui"/>
+      <import plugin="org.eclipse.emf.compare"/>
+   </requires>
+
+   <plugin
+         id="org.eclipse.emf.edapt.common.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.emf.edapt.declaration.edit"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.emf.edapt.declaration.editor"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.emf.edapt.history.edit"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.emf.edapt.history.editor"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.emf.edapt.migration.test"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.emf.edapt.migration.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>

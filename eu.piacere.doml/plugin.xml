@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<!--
+-->
+
+<plugin>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated doml -->
+      <package
+            uri="http://www.piacere-project.eu/doml/commons"
+            class="eu.piacere.doml.doml.commons.CommonsPackage"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated doml -->
+      <package
+            uri="http://www.piacere-project.eu/doml/application"
+            class="eu.piacere.doml.doml.application.ApplicationPackage"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated doml -->
+      <package
+            uri="http://www.piacere-project.eu/doml/infrastructure"
+            class="eu.piacere.doml.doml.infrastructure.InfrastructurePackage"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated doml -->
+      <package
+            uri="http://www.piacere-project.eu/doml/concrete"
+            class="eu.piacere.doml.doml.concrete.ConcretePackage"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated doml -->
+      <package
+            uri="http://www.piacere-project.eu/doml/optimization"
+            class="eu.piacere.doml.doml.optimization.OptimizationPackage"/>
+   </extension>
+
+</plugin>

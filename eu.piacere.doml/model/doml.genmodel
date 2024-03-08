@@ -1,0 +1,417 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/eu.piacere.doml/src" modelPluginID="eu.piacere.doml"
+    modelName="Doml" importerID="org.eclipse.emf.importer.ecore" complianceLevel="8.0"
+    copyrightFields="false">
+  <foreignModel>doml.emf</foreignModel>
+  <genPackages prefix="Doml" basePackage="eu.piacere.doml" disposableProviderFactory="true"
+      fileExtensions="domlx" ecorePackage="doml.ecore#/">
+    <nestedGenPackages prefix="Commons" disposableProviderFactory="true" ecorePackage="doml.ecore#//commons">
+      <genClasses ecoreClass="doml.ecore#//commons/DOMLModel">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//commons/DOMLModel/version"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference doml.ecore#//commons/DOMLModel/application"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference doml.ecore#//commons/DOMLModel/infrastructure"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference doml.ecore#//commons/DOMLModel/concretizations"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference doml.ecore#//commons/DOMLModel/optimization"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference doml.ecore#//commons/DOMLModel/configurations"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference doml.ecore#//commons/DOMLModel/activeConfiguration"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference doml.ecore#//commons/DOMLModel/activeInfrastructure"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference doml.ecore#//commons/DOMLModel/functionalRequirements"/>
+      </genClasses>
+      <genClasses image="false" ecoreClass="doml.ecore#//commons/Property">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//commons/Property/key"/>
+      </genClasses>
+      <genClasses ecoreClass="doml.ecore#//commons/ListProperty">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference doml.ecore#//commons/ListProperty/values"/>
+      </genClasses>
+      <genClasses ecoreClass="doml.ecore#//commons/IProperty">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//commons/IProperty/value"/>
+      </genClasses>
+      <genClasses ecoreClass="doml.ecore#//commons/SProperty">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//commons/SProperty/value"/>
+      </genClasses>
+      <genClasses ecoreClass="doml.ecore#//commons/FProperty">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//commons/FProperty/value"/>
+      </genClasses>
+      <genClasses ecoreClass="doml.ecore#//commons/BProperty">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//commons/BProperty/value"/>
+      </genClasses>
+      <genClasses image="false" ecoreClass="doml.ecore#//commons/ExtensionElement">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//commons/ExtensionElement/metaclassName"/>
+      </genClasses>
+      <genClasses image="false" ecoreClass="doml.ecore#//commons/DOMLElement">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//commons/DOMLElement/name"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//commons/DOMLElement/description"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference doml.ecore#//commons/DOMLElement/annotations"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference doml.ecore#//commons/DOMLElement/contributesTo"/>
+      </genClasses>
+      <genClasses ecoreClass="doml.ecore#//commons/Configuration">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference doml.ecore#//commons/Configuration/deployments"/>
+      </genClasses>
+      <genClasses image="false" ecoreClass="doml.ecore#//commons/DeployableElement"/>
+      <genClasses ecoreClass="doml.ecore#//commons/Deployment">
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference doml.ecore#//commons/Deployment/component"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference doml.ecore#//commons/Deployment/node"/>
+      </genClasses>
+      <genClasses ecoreClass="doml.ecore#//commons/Requirement">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//commons/Requirement/name"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//commons/Requirement/description"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//commons/Requirement/property"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference doml.ecore#//commons/Requirement/predicatesOn"/>
+      </genClasses>
+      <genClasses ecoreClass="doml.ecore#//commons/RangedRequirement">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//commons/RangedRequirement/min"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//commons/RangedRequirement/max"/>
+      </genClasses>
+      <genClasses ecoreClass="doml.ecore#//commons/EnumeratedRequirement">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//commons/EnumeratedRequirement/values"/>
+      </genClasses>
+      <genClasses image="false" ecoreClass="doml.ecore#//commons/DeploymentRequirement"/>
+      <genClasses ecoreClass="doml.ecore#//commons/DeploymentToNodeTypeRequirement">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//commons/DeploymentToNodeTypeRequirement/validTypes"/>
+      </genClasses>
+      <genClasses ecoreClass="doml.ecore#//commons/DeploymentToNodeWithPropertyRequirement">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//commons/DeploymentToNodeWithPropertyRequirement/min"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//commons/DeploymentToNodeWithPropertyRequirement/max"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//commons/DeploymentToNodeWithPropertyRequirement/values"/>
+      </genClasses>
+      <genClasses ecoreClass="doml.ecore#//commons/DeploymentToSpecificNodeRequirement">
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference doml.ecore#//commons/DeploymentToSpecificNodeRequirement/validElements"/>
+      </genClasses>
+      <genClasses image="false" ecoreClass="doml.ecore#//commons/Credentials"/>
+      <genClasses ecoreClass="doml.ecore#//commons/KeyPair">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//commons/KeyPair/user"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//commons/KeyPair/key"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//commons/KeyPair/algorithm"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//commons/KeyPair/bits"/>
+      </genClasses>
+      <genClasses ecoreClass="doml.ecore#//commons/UserPass">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//commons/UserPass/username"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//commons/UserPass/password"/>
+      </genClasses>
+      <genClasses ecoreClass="doml.ecore#//commons/Source">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//commons/Source/entry"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//commons/Source/inventory"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//commons/Source/backend"/>
+      </genClasses>
+    </nestedGenPackages>
+    <nestedGenPackages prefix="Application" disposableProviderFactory="true" ecorePackage="doml.ecore#//application">
+      <genClasses ecoreClass="doml.ecore#//application/ApplicationLayer">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference doml.ecore#//application/ApplicationLayer/components"/>
+      </genClasses>
+      <genClasses image="false" ecoreClass="doml.ecore#//application/ApplicationComponent"/>
+      <genClasses ecoreClass="doml.ecore#//application/SoftwareComponent">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//application/SoftwareComponent/isPersistent"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//application/SoftwareComponent/licenseCost"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference doml.ecore#//application/SoftwareComponent/exposedInterfaces"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference doml.ecore#//application/SoftwareComponent/consumedInterfaces"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference doml.ecore#//application/SoftwareComponent/src"/>
+      </genClasses>
+      <genClasses ecoreClass="doml.ecore#//application/DBMS"/>
+      <genClasses ecoreClass="doml.ecore#//application/SaaS">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//application/SaaS/licenseCost"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference doml.ecore#//application/SaaS/exposedInterfaces"/>
+      </genClasses>
+      <genClasses ecoreClass="doml.ecore#//application/SaaSDBMS">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//application/SaaSDBMS/databaseName"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//application/SaaSDBMS/engine"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//application/SaaSDBMS/engineVersion"/>
+      </genClasses>
+      <genClasses ecoreClass="doml.ecore#//application/SoftwareInterface">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//application/SoftwareInterface/endPoint"/>
+      </genClasses>
+      <genClasses ecoreClass="doml.ecore#//application/ExtApplicationComponent"/>
+    </nestedGenPackages>
+    <nestedGenPackages prefix="Infrastructure" disposableProviderFactory="true" ecorePackage="doml.ecore#//infrastructure">
+      <genEnums typeSafeEnumCompatible="false" ecoreEnum="doml.ecore#//infrastructure/LoadBalancerKind">
+        <genEnumLiterals ecoreEnumLiteral="doml.ecore#//infrastructure/LoadBalancerKind/DEFAULT"/>
+        <genEnumLiterals ecoreEnumLiteral="doml.ecore#//infrastructure/LoadBalancerKind/INTERNAL"/>
+        <genEnumLiterals ecoreEnumLiteral="doml.ecore#//infrastructure/LoadBalancerKind/EXTERNAL"/>
+      </genEnums>
+      <genEnums typeSafeEnumCompatible="false" ecoreEnum="doml.ecore#//infrastructure/RuleKind">
+        <genEnumLiterals ecoreEnumLiteral="doml.ecore#//infrastructure/RuleKind/EGRESS"/>
+        <genEnumLiterals ecoreEnumLiteral="doml.ecore#//infrastructure/RuleKind/INGRESS"/>
+      </genEnums>
+      <genEnums typeSafeEnumCompatible="false" ecoreEnum="doml.ecore#//infrastructure/GeneratorKind">
+        <genEnumLiterals ecoreEnumLiteral="doml.ecore#//infrastructure/GeneratorKind/SCRIPT"/>
+        <genEnumLiterals ecoreEnumLiteral="doml.ecore#//infrastructure/GeneratorKind/IMAGE"/>
+      </genEnums>
+      <genEnums typeSafeEnumCompatible="false" ecoreEnum="doml.ecore#//infrastructure/RoleKind">
+        <genEnumLiterals ecoreEnumLiteral="doml.ecore#//infrastructure/RoleKind/NONE"/>
+        <genEnumLiterals ecoreEnumLiteral="doml.ecore#//infrastructure/RoleKind/MANAGER"/>
+        <genEnumLiterals ecoreEnumLiteral="doml.ecore#//infrastructure/RoleKind/WORKER"/>
+        <genEnumLiterals ecoreEnumLiteral="doml.ecore#//infrastructure/RoleKind/MASTER"/>
+      </genEnums>
+      <genClasses ecoreClass="doml.ecore#//infrastructure/InfrastructureLayer">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference doml.ecore#//infrastructure/InfrastructureLayer/nodes"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference doml.ecore#//infrastructure/InfrastructureLayer/generators"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference doml.ecore#//infrastructure/InfrastructureLayer/storages"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference doml.ecore#//infrastructure/InfrastructureLayer/faas"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference doml.ecore#//infrastructure/InfrastructureLayer/credentials"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference doml.ecore#//infrastructure/InfrastructureLayer/executionEnvironments"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference doml.ecore#//infrastructure/InfrastructureLayer/groups"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference doml.ecore#//infrastructure/InfrastructureLayer/securityGroups"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference doml.ecore#//infrastructure/InfrastructureLayer/networks"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference doml.ecore#//infrastructure/InfrastructureLayer/rules"/>
+      </genClasses>
+      <genClasses ecoreClass="doml.ecore#//infrastructure/MonitoringRule">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//infrastructure/MonitoringRule/condition"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//infrastructure/MonitoringRule/strategy"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//infrastructure/MonitoringRule/strategyConfigurationString"/>
+      </genClasses>
+      <genClasses image="false" ecoreClass="doml.ecore#//infrastructure/ComputingGroup">
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference doml.ecore#//infrastructure/ComputingGroup/groupedNodes"/>
+      </genClasses>
+      <genClasses ecoreClass="doml.ecore#//infrastructure/AutoScalingGroup">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference doml.ecore#//infrastructure/AutoScalingGroup/machineDefinition"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//infrastructure/AutoScalingGroup/min"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//infrastructure/AutoScalingGroup/max"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//infrastructure/AutoScalingGroup/loadBalancer"/>
+      </genClasses>
+      <genClasses ecoreClass="doml.ecore#//infrastructure/Rule">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//infrastructure/Rule/kind"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//infrastructure/Rule/protocol"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//infrastructure/Rule/fromPort"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//infrastructure/Rule/toPort"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//infrastructure/Rule/cidr"/>
+      </genClasses>
+      <genClasses ecoreClass="doml.ecore#//infrastructure/SecurityGroup">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference doml.ecore#//infrastructure/SecurityGroup/rules"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference doml.ecore#//infrastructure/SecurityGroup/ifaces"/>
+      </genClasses>
+      <genClasses image="false" ecoreClass="doml.ecore#//infrastructure/InfrastructureElement"/>
+      <genClasses image="false" ecoreClass="doml.ecore#//infrastructure/Node">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference doml.ecore#//infrastructure/Node/ifaces"/>
+      </genClasses>
+      <genClasses image="false" ecoreClass="doml.ecore#//infrastructure/ComputingNode">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//infrastructure/ComputingNode/architecture"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//infrastructure/ComputingNode/os"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//infrastructure/ComputingNode/memory_mb"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//infrastructure/ComputingNode/storage"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//infrastructure/ComputingNode/cpu_count"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//infrastructure/ComputingNode/cost"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference doml.ecore#//infrastructure/ComputingNode/location"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference doml.ecore#//infrastructure/ComputingNode/credentials"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference doml.ecore#//infrastructure/ComputingNode/group"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference doml.ecore#//infrastructure/ComputingNode/nodeSpecificMonitoring"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//infrastructure/ComputingNode/disabledMonitorings"/>
+      </genClasses>
+      <genClasses image="false" ecoreClass="doml.ecore#//infrastructure/ComputingNodeGenerator">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//infrastructure/ComputingNodeGenerator/uri"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//infrastructure/ComputingNodeGenerator/kind"/>
+      </genClasses>
+      <genClasses ecoreClass="doml.ecore#//infrastructure/VMImage">
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference doml.ecore#//infrastructure/VMImage/generatedVMs"/>
+      </genClasses>
+      <genClasses ecoreClass="doml.ecore#//infrastructure/ContainerImage">
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference doml.ecore#//infrastructure/ContainerImage/generatedContainers"/>
+      </genClasses>
+      <genClasses ecoreClass="doml.ecore#//infrastructure/PhysicalComputingNode">
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference doml.ecore#//infrastructure/PhysicalComputingNode/configInterface"/>
+      </genClasses>
+      <genClasses ecoreClass="doml.ecore#//infrastructure/VirtualMachine">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//infrastructure/VirtualMachine/sizeDescription"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference doml.ecore#//infrastructure/VirtualMachine/generatedFrom"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference doml.ecore#//infrastructure/VirtualMachine/configInterface"/>
+      </genClasses>
+      <genClasses ecoreClass="doml.ecore#//infrastructure/Location">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//infrastructure/Location/region"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//infrastructure/Location/zone"/>
+      </genClasses>
+      <genClasses ecoreClass="doml.ecore#//infrastructure/ContainerConfig">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//infrastructure/ContainerConfig/container_port"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//infrastructure/ContainerConfig/vm_port"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference doml.ecore#//infrastructure/ContainerConfig/iface"/>
+      </genClasses>
+      <genClasses ecoreClass="doml.ecore#//infrastructure/ContainerHostConfig">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference doml.ecore#//infrastructure/ContainerHostConfig/environment_variables"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference doml.ecore#//infrastructure/ContainerHostConfig/host"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference doml.ecore#//infrastructure/ContainerHostConfig/configurations"/>
+      </genClasses>
+      <genClasses ecoreClass="doml.ecore#//infrastructure/Container">
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference doml.ecore#//infrastructure/Container/generatedFrom"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference doml.ecore#//infrastructure/Container/hostConfigs"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference doml.ecore#//infrastructure/Container/networks"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference doml.ecore#//infrastructure/Container/volumes"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference doml.ecore#//infrastructure/Container/dependsOn"/>
+      </genClasses>
+      <genClasses ecoreClass="doml.ecore#//infrastructure/ContainerGroup">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference doml.ecore#//infrastructure/ContainerGroup/services"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference doml.ecore#//infrastructure/ContainerGroup/networks"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference doml.ecore#//infrastructure/ContainerGroup/volumes"/>
+      </genClasses>
+      <genClasses ecoreClass="doml.ecore#//infrastructure/ContainerNetwork">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//infrastructure/ContainerNetwork/containerNetworkName"/>
+      </genClasses>
+      <genClasses ecoreClass="doml.ecore#//infrastructure/ContainerVolume">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//infrastructure/ContainerVolume/containerVolumeName"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//infrastructure/ContainerVolume/path"/>
+      </genClasses>
+      <genClasses ecoreClass="doml.ecore#//infrastructure/ExecutionEnvironment">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//infrastructure/ExecutionEnvironment/size"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//infrastructure/ExecutionEnvironment/maxSize"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference doml.ecore#//infrastructure/ExecutionEnvironment/location"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference doml.ecore#//infrastructure/ExecutionEnvironment/network"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference doml.ecore#//infrastructure/ExecutionEnvironment/securityGroups"/>
+      </genClasses>
+      <genClasses ecoreClass="doml.ecore#//infrastructure/Network">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//infrastructure/Network/protocol"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference doml.ecore#//infrastructure/Network/connectedIfaces"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference doml.ecore#//infrastructure/Network/gateways"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference doml.ecore#//infrastructure/Network/subnets"/>
+      </genClasses>
+      <genClasses ecoreClass="doml.ecore#//infrastructure/Subnet">
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference doml.ecore#//infrastructure/Subnet/connectedTo"/>
+      </genClasses>
+      <genClasses ecoreClass="doml.ecore#//infrastructure/NetworkInterface">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//infrastructure/NetworkInterface/speed"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//infrastructure/NetworkInterface/endPoint"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference doml.ecore#//infrastructure/NetworkInterface/belongsTo"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference doml.ecore#//infrastructure/NetworkInterface/associated"/>
+      </genClasses>
+      <genClasses ecoreClass="doml.ecore#//infrastructure/InternetGateway">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//infrastructure/InternetGateway/address"/>
+      </genClasses>
+      <genClasses ecoreClass="doml.ecore#//infrastructure/Storage">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//infrastructure/Storage/label"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//infrastructure/Storage/size_gb"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//infrastructure/Storage/cost"/>
+      </genClasses>
+      <genClasses ecoreClass="doml.ecore#//infrastructure/FunctionAsAService">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//infrastructure/FunctionAsAService/cost"/>
+      </genClasses>
+      <genClasses ecoreClass="doml.ecore#//infrastructure/SwarmRole">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//infrastructure/SwarmRole/kind"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference doml.ecore#//infrastructure/SwarmRole/nodes"/>
+      </genClasses>
+      <genClasses ecoreClass="doml.ecore#//infrastructure/Swarm">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference doml.ecore#//infrastructure/Swarm/roles"/>
+      </genClasses>
+      <genClasses ecoreClass="doml.ecore#//infrastructure/ExtInfrastructureElement"/>
+    </nestedGenPackages>
+    <nestedGenPackages prefix="Concrete" disposableProviderFactory="true" ecorePackage="doml.ecore#//concrete">
+      <genClasses ecoreClass="doml.ecore#//concrete/ConcreteInfrastructure">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference doml.ecore#//concrete/ConcreteInfrastructure/providers"/>
+      </genClasses>
+      <genClasses ecoreClass="doml.ecore#//concrete/RuntimeProvider">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference doml.ecore#//concrete/RuntimeProvider/resources"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference doml.ecore#//concrete/RuntimeProvider/vms"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference doml.ecore#//concrete/RuntimeProvider/executionEnvironments"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference doml.ecore#//concrete/RuntimeProvider/vmImages"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference doml.ecore#//concrete/RuntimeProvider/containerImages"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference doml.ecore#//concrete/RuntimeProvider/networks"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference doml.ecore#//concrete/RuntimeProvider/storages"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference doml.ecore#//concrete/RuntimeProvider/faas"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference doml.ecore#//concrete/RuntimeProvider/autoScalingGroups"/>
+      </genClasses>
+      <genClasses image="false" ecoreClass="doml.ecore#//concrete/ConcreteElement">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//concrete/ConcreteElement/resourceName"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//concrete/ConcreteElement/configurationScript"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//concrete/ConcreteElement/preexisting"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference doml.ecore#//concrete/ConcreteElement/refs"/>
+      </genClasses>
+      <genClasses ecoreClass="doml.ecore#//concrete/GenericResource">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//concrete/GenericResource/type"/>
+      </genClasses>
+      <genClasses ecoreClass="doml.ecore#//concrete/VirtualMachine">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//concrete/VirtualMachine/vm_type"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference doml.ecore#//concrete/VirtualMachine/maps"/>
+      </genClasses>
+      <genClasses ecoreClass="doml.ecore#//concrete/VMImage">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//concrete/VMImage/image_name"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference doml.ecore#//concrete/VMImage/maps"/>
+      </genClasses>
+      <genClasses ecoreClass="doml.ecore#//concrete/ContainerImage">
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference doml.ecore#//concrete/ContainerImage/maps"/>
+      </genClasses>
+      <genClasses ecoreClass="doml.ecore#//concrete/ExecutionEnvironment">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//concrete/ExecutionEnvironment/instance_type"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//concrete/ExecutionEnvironment/storage_type"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference doml.ecore#//concrete/ExecutionEnvironment/maps"/>
+      </genClasses>
+      <genClasses ecoreClass="doml.ecore#//concrete/Network">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//concrete/Network/protocol"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//concrete/Network/addressRange"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference doml.ecore#//concrete/Network/subnets"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference doml.ecore#//concrete/Network/maps"/>
+      </genClasses>
+      <genClasses ecoreClass="doml.ecore#//concrete/Subnet"/>
+      <genClasses ecoreClass="doml.ecore#//concrete/Storage">
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference doml.ecore#//concrete/Storage/maps"/>
+      </genClasses>
+      <genClasses ecoreClass="doml.ecore#//concrete/FunctionAsAService">
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference doml.ecore#//concrete/FunctionAsAService/maps"/>
+      </genClasses>
+      <genClasses ecoreClass="doml.ecore#//concrete/AutoScalingGroup">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//concrete/AutoScalingGroup/vm_type"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference doml.ecore#//concrete/AutoScalingGroup/maps"/>
+      </genClasses>
+      <genClasses ecoreClass="doml.ecore#//concrete/ExtConcreteElement"/>
+    </nestedGenPackages>
+    <nestedGenPackages prefix="Optimization" disposableProviderFactory="true" ecorePackage="doml.ecore#//optimization">
+      <genClasses ecoreClass="doml.ecore#//optimization/OptimizationLayer">
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference doml.ecore#//optimization/OptimizationLayer/startingHint"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference doml.ecore#//optimization/OptimizationLayer/solutions"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference doml.ecore#//optimization/OptimizationLayer/objectives"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference doml.ecore#//optimization/OptimizationLayer/nonfunctionalRequirements"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//optimization/OptimizationLayer/runtime"/>
+      </genClasses>
+      <genClasses ecoreClass="doml.ecore#//optimization/ObjectiveValue">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//optimization/ObjectiveValue/cost"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//optimization/ObjectiveValue/availability"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//optimization/ObjectiveValue/performance"/>
+      </genClasses>
+      <genClasses ecoreClass="doml.ecore#//optimization/OptimizationSolution">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference doml.ecore#//optimization/OptimizationSolution/objectives"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//optimization/OptimizationSolution/decisions"/>
+      </genClasses>
+      <genClasses image="false" ecoreClass="doml.ecore#//optimization/OptimizationObjective">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//optimization/OptimizationObjective/kind"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute doml.ecore#//optimization/OptimizationObjective/property"/>
+      </genClasses>
+      <genClasses ecoreClass="doml.ecore#//optimization/CountObjective"/>
+      <genClasses ecoreClass="doml.ecore#//optimization/MeasurableObjective"/>
+      <genClasses ecoreClass="doml.ecore#//optimization/ExtOptimizationObjective"/>
+    </nestedGenPackages>
+  </genPackages>
+</genmodel:GenModel>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.commands">
+      <category
+            id="eu.piacere.doml.grammar.generator.ui.commands.category"
+            name="DOML-E">
+      </category>
+      <command
+            categoryId="eu.piacere.doml.grammar.generator.ui.commands.category"
+            id="eu.piacere.doml.grammar.generator.ui.commands.generateGrammarCommand"
+            name="Generate Grammar">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="eu.piacere.doml.grammar.generator.ui.handlers.GenerateGrammarHandler"
+            commandId="eu.piacere.doml.grammar.generator.ui.commands.generateGrammarCommand">
+      </handler>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+         <menu
+               id="eu.piacere.doml.grammar.generator.ui.menus.sampleMenu"
+               label="DOML-E">
+            <command
+                  commandId="eu.piacere.doml.grammar.generator.ui.commands.generateGrammarCommand"
+                  label="Generate Grammar"
+                  style="push">
+               <visibleWhen
+                     checkEnabled="false">
+                  <iterate
+                        ifEmpty="false"
+                        operator="or">
+                     <test
+                           property="org.eclipse.core.resources.extension"
+                           value="ecore">
+                     </test>
+                  </iterate>
+               </visibleWhen>
+            </command>
+         </menu>
+      </menuContribution>
+   </extension>
+
+</plugin>

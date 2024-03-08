@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<!--
+    Copyright (c) 2007, 2010 BMW Car IT, Technische Universitaet Muenchen, and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    https://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        BMW Car IT - Initial API and implementation
+        Technische Universitaet Muenchen - Major refactoring and extension
+ -->
+
+<plugin>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            categoryId="org.eclipse.emf.edapt"
+            defaultHandler="org.eclipse.emf.edapt.migration.ui.MigrateHandler"
+            id="org.eclipse.emf.edapt.Migrate"
+            name="Migrate">
+      </command>
+      <command
+            categoryId="org.eclipse.emf.edapt"
+            defaultHandler="org.eclipse.emf.edapt.migration.ui.LoadModelHandler"
+            id="org.eclipse.emf.edapt.LoadModel"
+            name="Load Model">
+      </command>
+      <command
+            categoryId="org.eclipse.emf.edapt"
+            defaultHandler="org.eclipse.emf.edapt.migration.ui.RestoreBackupHandler"
+            id="org.eclipse.emf.edapt.RestoreBackup"
+            name="Restore Backup">
+      </command>
+      <command
+            categoryId="org.eclipse.emf.edapt"
+            defaultHandler="org.eclipse.emf.edapt.migration.ui.RegisterMetamodelHandler"
+            id="org.eclipse.emf.edapt.RegisterMetamodel"
+            name="Register Metamodel">
+      </command>
+      <category
+            id="org.eclipse.emf.edapt"
+            name="Edapt">
+      </category>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+         <menu
+               id="org.eclipse.emf.edapt.menu"
+               label="Edapt">
+            <command
+                  commandId="org.eclipse.emf.edapt.Migrate"
+                  label="Migrate"
+                  style="push">
+               <visibleWhen
+                     checkEnabled="false">
+                  <reference
+                        definitionId="org.eclipse.emf.edapt.migration.ui.multipleResources">
+                  </reference>
+               </visibleWhen>
+            </command>
+            <command
+                  commandId="org.eclipse.emf.edapt.LoadModel"
+                  label="Load Model"
+                  style="push">
+               <visibleWhen
+                     checkEnabled="false">
+                  <reference
+                        definitionId="org.eclipse.emf.edapt.migration.ui.multipleResources">
+                  </reference>
+               </visibleWhen>
+            </command>
+            <command
+                  commandId="org.eclipse.emf.edapt.RestoreBackup"
+                  label="Restore Backup"
+                  style="push">
+               <visibleWhen
+                     checkEnabled="false">
+                  <reference
+                        definitionId="org.eclipse.emf.edapt.migration.ui.multipleResources">
+                  </reference>
+               </visibleWhen>
+            </command>
+            <command
+                  commandId="org.eclipse.emf.edapt.RegisterMetamodel"
+                  label="Register Metamodel"
+                  style="push">
+               <visibleWhen
+                     checkEnabled="false">
+                  <with
+                        variable="selection">
+                     <count
+                           value="1">
+                     </count>
+                     <iterate>
+                        <adapt
+                              type="org.eclipse.core.resources.IFile">
+                           <test
+                                 property="org.eclipse.core.resources.extension"
+                                 value="ecore">
+                           </test>
+                        </adapt>
+                     </iterate>
+                  </with>
+               </visibleWhen>
+            </command>
+         </menu>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.core.expressions.definitions">
+      <definition
+            id="org.eclipse.emf.edapt.migration.ui.multipleResources">
+         <with
+               variable="selection">
+            <iterate
+                  ifEmpty="false">
+               <adapt
+                     type="org.eclipse.core.resources.IResource">
+               </adapt>
+            </iterate>
+         </with>
+      </definition>
+   </extension>
+   <extension
+         point="org.eclipse.debug.core.launchConfigurationTypes">
+      <launchConfigurationType
+            delegate="org.eclipse.emf.edapt.migration.ui.MigrationLaunchConfigurationDelegate"
+            delegateName="Perform Migration"
+            id="org.eclipse.emf.edapt.migration.launching"
+            modes="run,debug"
+            name="Edapt Migration">
+      </launchConfigurationType>
+   </extension>
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+      <launchConfigurationTabGroup
+            class="org.eclipse.emf.edapt.migration.ui.MigrationLaunchConfigurationTabGroup"
+            id="org.eclipse.emf.edapt.migration.ui.migrationTabGroups"
+            type="org.eclipse.emf.edapt.migration.launching">
+      </launchConfigurationTabGroup>
+   </extension>
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+      <launchConfigurationTypeImage
+            configTypeID="org.eclipse.emf.edapt.migration.launching"
+            icon="icons/History.gif"
+            id="org.eclipse.emf.edapt.migration.launchConfigurationTypeImage">
+      </launchConfigurationTypeImage>
+   </extension>
+</plugin>

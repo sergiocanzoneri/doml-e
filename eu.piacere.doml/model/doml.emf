@@ -1,0 +1,502 @@
+@emf.gen(basePackage="eu.piacere.doml", fileExtensions="domlx", complianceLevel="JDK80")
+@namespace(uri="http://www.piacere-project.eu/doml", prefix="doml")
+package doml;
+
+@namespace(uri="http://www.piacere-project.eu/doml/commons", prefix="commons")
+package commons {
+
+	class DOMLModel extends DOMLElement {
+		attr String[1] version = "3.1";
+		val application.ApplicationLayer application;
+		val infrastructure.InfrastructureLayer infrastructure;
+		val concrete.ConcreteInfrastructure [*] concretizations;
+		val optimization.OptimizationLayer optimization;
+		val Configuration [*] configurations;
+		ref Configuration activeConfiguration;
+		ref concrete.ConcreteInfrastructure activeInfrastructure;
+		val Requirement [*] functionalRequirements;
+	}
+	
+	abstract class Property {
+		attr String key;
+	}
+	
+	class ListProperty extends Property {
+		val Property[*] values;
+	}
+	
+	class IProperty extends Property {
+		attr Integer value;
+	}
+
+	class SProperty extends Property {
+		attr String value;
+	}
+
+	class FProperty extends Property {
+		attr Float value;
+	}
+
+	class BProperty extends Property {
+		attr Boolean value;
+	}
+
+	abstract class ExtensionElement {
+		attr String metaclassName;
+	}
+
+	abstract class DOMLElement {
+		attr String name;
+		attr String description;
+		val Property [*] annotations; // Similar to Docker Compose labels. Used for extensibility
+		ref Requirement [*]#predicatesOn contributesTo;
+	}
+	
+	class Configuration extends DOMLElement{
+		val Deployment [*] deployments;
+	}
+	
+	abstract class DeployableElement {}
+
+	class Deployment {
+		ref DeployableElement [1] component;
+		ref infrastructure.InfrastructureElement [1] node;
+	}
+	
+	// TODO: to be understood by KR
+	// Ismel and Elisabetta suggest to move it to a separate place or session
+	class Requirement {
+		attr String name;
+		attr String description;
+		attr String property;
+		ref DOMLElement [*]#contributesTo predicatesOn;
+	}
+	
+	class RangedRequirement extends Requirement {
+		attr Float min;
+		attr Float max;
+	}
+	
+	class EnumeratedRequirement extends Requirement {
+		attr String [*] values;
+	}
+	
+	abstract class DeploymentRequirement extends Requirement {}
+	
+	class DeploymentToNodeTypeRequirement extends DeploymentRequirement {
+		attr String [*] validTypes;
+	}
+	
+	class DeploymentToNodeWithPropertyRequirement extends DeploymentRequirement {
+		attr Float min;
+		attr Float max;
+		attr String [*] values;
+	}
+	
+	class DeploymentToSpecificNodeRequirement extends DeploymentRequirement {
+		ref infrastructure.InfrastructureElement [*] validElements;	
+	}
+	
+	abstract class Credentials extends DOMLElement {}
+	
+	class KeyPair extends Credentials {
+		attr String user;
+		attr String key;
+		attr String algorithm;
+		attr Integer bits;
+	}
+	
+	class UserPass extends Credentials {
+		attr String username;
+		attr String password;
+	}
+	
+	class Source extends DOMLElement {
+		attr String entry;
+		attr String inventory;
+		attr String backend;
+	}
+}
+
+@namespace(uri="http://www.piacere-project.eu/doml/application", prefix="app")
+package application {
+	
+	class ApplicationLayer extends commons.DOMLElement {
+		val ApplicationComponent [*] components;
+	}
+	
+	abstract class ApplicationComponent extends commons.DOMLElement, commons.DeployableElement {}
+	
+	class SoftwareComponent extends ApplicationComponent {
+		attr Boolean isPersistent = false;
+		attr Float licenseCost; // In Euro
+		val SoftwareInterface [*] exposedInterfaces;
+		ref SoftwareInterface [*] consumedInterfaces;
+		val commons.Source src;
+	}
+	
+	class DBMS extends SoftwareComponent {}
+	
+	class SaaS extends ApplicationComponent {
+	    attr Float licenseCost; // In Euro
+		val SoftwareInterface [*] exposedInterfaces;
+	}
+	
+	class SaaSDBMS extends SaaS {
+		attr String databaseName;
+		attr String engine;
+		attr String engineVersion;
+	}
+	
+	class SoftwareInterface extends ApplicationComponent {
+		attr String endPoint;
+	}
+	
+	class ExtApplicationComponent extends ApplicationComponent, commons.ExtensionElement {}
+}
+
+@namespace(uri="http://www.piacere-project.eu/doml/infrastructure", prefix="infra")
+package infrastructure {
+	
+	class InfrastructureLayer extends commons.DOMLElement {
+		
+		val ComputingNode[*] nodes;        			// VMs, Containers (and ASGs) and physical machines (iot nodes)
+		val ComputingNodeGenerator [*] generators;  // Images (for Containers and VirtualMachine)
+		val Storage [*] storages;          			// Storage services 
+		val FunctionAsAService [*] faas;   			// Lambda, etc.
+		val commons.Credentials[*] credentials;		// Credentials to access computing nodes
+		val ExecutionEnvironment[*] executionEnvironments;
+		val ComputingGroup [*] groups;
+		val SecurityGroup [*] securityGroups;
+		val Network [*] networks;
+		val MonitoringRule [*] rules;
+	}
+	
+	class MonitoringRule extends commons.DOMLElement {
+		attr String [1] condition;
+		attr String [1] strategy;
+		attr String strategyConfigurationString;
+	}
+	
+	abstract class ComputingGroup extends commons.DOMLElement {
+		ref ComputingNode [*]#group groupedNodes;
+	}
+	
+	// TODO: need further analysis
+	class AutoScalingGroup extends ComputingGroup {
+		val VirtualMachine [1] machineDefinition;
+		attr Integer min = 1;
+		attr Integer max = 1;
+		// val SecurityGroup securityGroup;
+		attr LoadBalancerKind loadBalancer = "DEFAULT";
+	}
+	
+	// Review if these make sense
+	enum LoadBalancerKind {
+		DEFAULT = 0;
+		INTERNAL = 1;
+		EXTERNAL = 2;
+		
+	}
+	
+	class Rule extends commons.DOMLElement{
+		attr RuleKind kind;
+		attr String protocol;
+		attr Integer fromPort;
+		attr Integer toPort;
+		attr String [*] cidr;
+	}
+	
+	enum RuleKind  {
+		EGRESS = 0;
+		INGRESS = 1;
+	}
+
+	class SecurityGroup extends commons.DOMLElement {
+		val Rule [*] rules;
+		ref NetworkInterface [*]#associated ifaces;
+	}
+	
+	// class AvailabilityGroup extends ComputingGroup { }
+	
+	abstract class InfrastructureElement extends commons.DOMLElement, commons.DeployableElement {}
+	
+	abstract class Node extends InfrastructureElement {
+		val NetworkInterface [*] ifaces;
+	}
+	
+	abstract class ComputingNode extends Node {
+	    // These attributes are to be used as REQUIREMENTS for the concrete layers
+		attr String architecture;
+		attr String os;
+		attr Float memory_mb;
+		attr Float storage;
+		attr Integer cpu_count;
+		attr Float cost; // In Euro
+		val Location location;
+		ref commons.Credentials credentials;
+		ref ComputingGroup #groupedNodes group;
+		ref MonitoringRule [*] nodeSpecificMonitoring;
+		attr String [*] disabledMonitorings;
+	}
+	
+	abstract class ComputingNodeGenerator extends commons.DOMLElement {
+		attr String uri;   // URI to the file/image/whatever file that is relevant for the kind
+		attr GeneratorKind kind;
+	}
+	
+	enum GeneratorKind {
+		SCRIPT;
+		IMAGE;
+	}
+	
+	class VMImage extends ComputingNodeGenerator {
+		ref VirtualMachine [*]#generatedFrom generatedVMs;
+	}
+	
+	class ContainerImage extends ComputingNodeGenerator {
+		ref Container [*] #generatedFrom generatedContainers;
+	}
+	
+	// Existing machines, for example, IoT nodes, existing servers, etc.
+	class PhysicalComputingNode extends ComputingNode {
+		ref NetworkInterface configInterface;
+	}
+	
+	// AmazonVM, Vsphere... (in Terraform these are different) 
+	class VirtualMachine extends ComputingNode {
+		attr String sizeDescription;  // size of vm
+		ref VMImage #generatedVMs generatedFrom;
+		ref NetworkInterface configInterface;
+	}
+	
+	class Location extends commons.DOMLElement{
+		attr String [1] region;
+		attr String zone;
+	}
+	
+	class ContainerConfig extends commons.DOMLElement {
+		attr Integer container_port;
+		attr Integer vm_port;
+		ref NetworkInterface iface;
+	}
+	
+	class ContainerHostConfig extends commons.DOMLElement {
+		val commons.SProperty[*] environment_variables;
+		ref ComputingNode host;
+		val ContainerConfig[*] configurations;
+	}
+
+	// Docker, Swarm etc.
+	class Container extends ComputingNode {
+		ref ContainerImage #generatedContainers generatedFrom;
+		val ContainerHostConfig [*] hostConfigs;
+		ref ContainerNetwork[*] networks;
+		ref ContainerVolume[*] volumes;
+		ref Container[*] dependsOn;
+	}
+	
+	class ContainerGroup extends ComputingGroup {
+		val Container[+] services;
+		val ContainerNetwork[*] networks;
+		val ContainerVolume[*] volumes;
+	}
+	
+	class ContainerNetwork extends commons.DOMLElement {
+		attr String containerNetworkName;
+	}
+	
+	class ContainerVolume extends commons.DOMLElement {
+		attr String containerVolumeName;
+		attr String path;
+	}
+	
+	class ExecutionEnvironment extends InfrastructureElement {
+		attr Float size;
+		attr Float maxSize;
+		val Location location;
+		ref Network network;
+		ref SecurityGroup[*] securityGroups;
+	}
+	
+	class Network extends commons.DOMLElement {
+		attr String protocol = "TCP/IP";
+		//attr String addressRange;
+		ref NetworkInterface [*]#belongsTo connectedIfaces;
+		val InternetGateway [*] gateways;
+		val Subnet [*] subnets;
+	}
+	
+	class Subnet extends Network {
+		ref Subnet [*] connectedTo; // Define links between subnets
+	}
+	
+	class NetworkInterface extends InfrastructureElement {
+	    attr String speed;
+	    attr String endPoint;
+		ref Network#connectedIfaces belongsTo;
+		ref SecurityGroup[*] #ifaces associated;
+	}
+	
+	class InternetGateway extends Node {
+		attr String address;
+	}
+	
+	//class Firewall extends commons.DOMLElement {
+	//	val NetworkInterface [*] ifaces;
+	//}
+	
+	class Storage extends InfrastructureElement {
+		attr String label;
+		attr int size_gb;
+		attr Float cost;
+		// val NetworkInterface [*] ifaces;
+	}
+	
+	class FunctionAsAService extends InfrastructureElement {
+		attr Float cost;
+		// val NetworkInterface [*] ifaces;
+	}
+	
+	enum RoleKind {
+		NONE;
+		MANAGER;
+		WORKER;
+		MASTER;
+	}
+
+	class SwarmRole extends commons.DOMLElement {
+		attr RoleKind kind;
+		val ComputingNode [*] nodes;
+	}
+
+	class Swarm extends ComputingGroup {
+		val SwarmRole [*] roles;
+		// val Tasks [*] tasks;
+		// val Services [*] services;
+		// val LoadBalancer balancer;
+	}
+
+	class ExtInfrastructureElement extends InfrastructureElement, commons.ExtensionElement {}
+	
+	//class RuntimeOrchestrationEnvironment extends commons.DOMLElement {
+	//	ref ComputingNode [*] controlledNodes;
+	//	ref Network [*] controlledNetworks;
+	//}
+}
+
+@namespace(uri="http://www.piacere-project.eu/doml/concrete", prefix="concrete")
+package concrete {
+
+    class ConcreteInfrastructure extends commons.DOMLElement {
+    	val RuntimeProvider[*] providers;
+    }
+
+	class RuntimeProvider extends commons.DOMLElement {
+		val GenericResource[*] resources;
+    	val VirtualMachine [*] vms;
+    	val ExecutionEnvironment[*] executionEnvironments;
+    	val VMImage [*] vmImages;
+    	val ContainerImage [*] containerImages;
+    	val Network[*] networks;
+    	val Storage [*] storages;
+    	val FunctionAsAService [*] faas;
+    	// val ComputingGroup[*] groups; // currently unused 
+    	val AutoScalingGroup[*] autoScalingGroups;
+	}
+	
+	abstract class ConcreteElement extends commons.DOMLElement {
+		attr String resourceName;
+		attr String configurationScript;
+		attr Boolean preexisting = false;
+		ref ConcreteElement[*] refs;
+	}
+	
+	class GenericResource extends ConcreteElement {
+		attr String type;
+		// attr String gname; Substituted by resourceName in the superclass
+	}
+	
+	class VirtualMachine extends ConcreteElement {
+		attr String vm_type; // Name of the VM type (size on Azure, instance type on AWS, machine type con GCP, flavor on Openstack, generic machine type on Terraform doc)
+		ref infrastructure.VirtualMachine maps;
+	}
+	
+	class VMImage extends ConcreteElement {
+		attr String image_name;
+		ref infrastructure.VMImage maps;
+	}
+	
+	class ContainerImage extends ConcreteElement {
+		ref infrastructure.ContainerImage maps;
+	}
+	
+	class ExecutionEnvironment extends ConcreteElement {
+		attr String instance_type;
+		attr String storage_type;
+		ref infrastructure.ExecutionEnvironment maps;
+	}
+	
+	class Network extends ConcreteElement {
+		attr String protocol;
+		attr String addressRange;
+		val Subnet[*] subnets;
+		ref infrastructure.Network maps;
+	}
+	
+	class Subnet extends Network { }
+	
+	class Storage extends ConcreteElement {
+		ref infrastructure.Storage maps;
+	}
+	
+	class FunctionAsAService extends ConcreteElement {
+		ref infrastructure.FunctionAsAService maps;
+	}
+	
+	//class ComputingGroup extends ConcreteElement {
+		//ref infrastructure.ComputingGroup maps;
+	//}
+	
+	class AutoScalingGroup extends ConcreteElement {
+		attr String vm_type;
+		ref infrastructure.AutoScalingGroup maps;
+	}
+	
+	class ExtConcreteElement extends ConcreteElement, commons.ExtensionElement {}
+}
+
+
+@namespace(uri="http://www.piacere-project.eu/doml/optimization", prefix="opt")
+package optimization {
+	
+	class OptimizationLayer extends commons.DOMLElement {
+		ref commons.Configuration startingHint;
+		val OptimizationSolution [*] solutions;
+		val OptimizationObjective [*] objectives;
+		val commons.Requirement [*] nonfunctionalRequirements;
+		attr Float runtime;
+	}
+	
+	class ObjectiveValue {
+		attr Float cost;
+		attr Float availability;
+		attr Float performance;
+	}
+	
+	class OptimizationSolution extends commons.Configuration {
+		val ObjectiveValue objectives;
+		attr String [*] decisions;
+	}
+	
+	abstract class OptimizationObjective extends commons.DOMLElement {
+		attr String [1] kind = "Max";
+		attr String property;
+	}
+	
+	class CountObjective extends OptimizationObjective {}
+	
+	class MeasurableObjective extends OptimizationObjective {}
+	
+	class ExtOptimizationObjective extends OptimizationObjective, commons.ExtensionElement {}
+}
