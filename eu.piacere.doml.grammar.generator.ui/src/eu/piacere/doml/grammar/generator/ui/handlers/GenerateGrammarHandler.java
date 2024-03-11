@@ -88,7 +88,7 @@ public class GenerateGrammarHandler extends AbstractHandler {
 				domlGrammarBuilder.setJsonFilePath(json);
 				
 				MessageBox loadFixedContentFromJsonDialog = new MessageBox(window.getShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
-				loadFixedContentFromJsonDialog.setMessage("JSON configuration file found. Do you want to get DOML fixed content from file?");
+				loadFixedContentFromJsonDialog.setMessage("JSON configuration file found. Would you wish to load DOML fixed content from file?");
 				loadFixedContentFromJsonDialog.setText("Import DOML fixed content.");
 				int loadFixedContentFromJsonReply = loadFixedContentFromJsonDialog.open();
 				if(loadFixedContentFromJsonReply == SWT.YES) {

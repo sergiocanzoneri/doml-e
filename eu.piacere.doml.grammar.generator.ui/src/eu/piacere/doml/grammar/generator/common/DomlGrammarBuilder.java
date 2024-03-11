@@ -302,7 +302,7 @@ public final class DomlGrammarBuilder {
 	 * For each classifier, it stores the associated rule name within the "rulesNames" map.
 	 * Please note that within two different packages, there could be two classifiers
 	 * sharing the same name: therefore, there is the need to distinguish them by
-	 * associating a different rule name for each classifier.
+	 * assigning a different rule name to each classifier.
 	 * To do so, a check to see whether the classifier name is present within the map
 	 * values is done: if such condition happens to be true, then a new rule name
 	 * is built by adding the package name as a prefix to the classifier name.
@@ -701,6 +701,14 @@ public final class DomlGrammarBuilder {
 		//boolean isUnordered = DomlUnorderedClasses.getClassNames().contains(name);
 		boolean isUnordered = isUnorderedClass(eAttributesAndReferences);
 		
+		
+		/*
+		 * Retrieve attributes having Enumeration type and check through the JSON content
+		 * if some keyword has to be replaced with that enumeration attribute.
+		 * If this happens, then put in the replaceKeywordWithEnum map the name of the
+		 * element whose keyword needs to be replaced together with the enumeration
+		 * rule, contained in the enumKeyword string.
+		 */
 		List<EAttribute> containedEnumAttrs = containedEnumAttributes(eAttributesAndReferences);
 		Map<String, String> replaceKeywordWithEnum = new HashMap<String, String>();
 		
@@ -814,6 +822,8 @@ public final class DomlGrammarBuilder {
 			if(eReferencesSize>1) {
 				bld.append("\t\t)*" + System.lineSeparator());
 			}
+			else {
+				bld.append("*");			}
 		}
 		
 		return bld.toString();
@@ -1506,7 +1516,7 @@ public final class DomlGrammarBuilder {
 	 * be directly connected by the same concept (e.g., the VMImage class requires a URI
 	 * associated to either its image or script; instead of using a keyword to introduce
 	 * such URI, DOML (3.1) currently requires to specify either the keyword "script"
-	 * or the keyword "image", as they are possible values of the "GeneratorKind" enumeration.
+	 * or the keyword "image", as they are possible values of the "GeneratorKind" enumeration).
 	 * This method allows to detect such cases, that need to be specified by users:
 	 * to do so, a special JSON key is used to retrieve the name of the element the keyword
 	 * of which needs to be replaced by the enumeration value; such a JSON key will be
