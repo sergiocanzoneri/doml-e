@@ -166,7 +166,7 @@ public final class DomlGrammarBuilder {
 	private EPackage loadMetamodel(IFile ecoreFile) {
 		ResourceSet set = new ResourceSetImpl();
 		Resource.Factory ecoreResourceFactory = new EcoreResourceFactoryImpl();
-		// EcoperPackage.eNS_PREFIX could be EcoreEditor.ECORE_FILE_EXTENSION, but that's actually the same value.
+		// EcorePackage.eNS_PREFIX could be EcoreEditor.ECORE_FILE_EXTENSION, but that's actually the same value.
 		Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put(EcorePackage.eNS_PREFIX, ecoreResourceFactory);
 		URI fileURI = URI.createFileURI(ecoreFile.getRawLocation().makeAbsolute().toString());
 		Resource res = set.getResource(fileURI, true);
@@ -208,8 +208,9 @@ public final class DomlGrammarBuilder {
 	 * one will be containing the list of all super-types for each EClassifier, the other
 	 * one will be containing the list of all sub-types for each of them.
 	 * @param rootPackage the DOML root package
-	 * @throws DomlGrammarBuilderException if either the eSuperTypes or the eAllSuperTypes lists are not
-	 * instances of EList<EClassifier>. This is supposed to never happen.
+	 * @throws DomlGrammarBuilderException either if the eAllSuperTypes lists is not instance of EList<EClassifier>
+	 * or if the DOMLElement or the ConcreteElement class is not found.
+	 * This is supposed to never happen.
 	 */
 	private void initializeEClassifierHierarchy(EPackage rootPackage) throws DomlGrammarBuilderException {
 		boolean domlElementEClassifierFound = false;
@@ -351,8 +352,8 @@ public final class DomlGrammarBuilder {
 	}
 
 	/*
-	 * Scans the metamodel and creates an Xtext rule for each concrete EClass or EEnum.
-	 * It also creates a rule for two specific abstract EClass instances (DOMLElement and ConcreteElement).
+	 * Scans the metamodel and creates an Xtext rule for each EClass or EEnum.
+	 * It also creates a fragment rule for two specific abstract EClass instances (DOMLElement and ConcreteElement).
 	 * The rules are appended to the StringBuilder argument "bld".
 	 */
 	private void createRulesForPackage(EPackage rootPackage, StringBuilder bld) throws DomlGrammarBuilderException {

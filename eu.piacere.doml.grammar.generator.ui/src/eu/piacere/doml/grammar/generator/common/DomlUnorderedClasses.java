@@ -6,6 +6,8 @@ import java.util.List;
 /**
  * @author Sergio Canzoneri, Politecnico di Milano
  * 
+ * NOTE: CURRENTLY UNUSED
+ * 
  * An enumeration to represent class which can contain unordered multiple references.
  * These class are typically the representations of the main layers.
  */
