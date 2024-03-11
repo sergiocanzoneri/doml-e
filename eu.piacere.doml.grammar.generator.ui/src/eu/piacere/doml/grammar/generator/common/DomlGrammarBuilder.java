@@ -72,14 +72,12 @@ public final class DomlGrammarBuilder {
 
 	// StringBuilders to build the full syntax.
 	private StringBuilder grammarDeclaration;
-	private StringBuilder imports;
 	private StringBuilder unchangeables;
 	private StringBuilder datatypes;
 	private StringBuilder terminals;
 	
 	// Constant JSON keys to access fixed DOML content.
 	private static final String JSON_KEY_GRAMMAR_DECLARATION = "GrammarDeclaration";
-	private static final String JSON_KEY_IMPORTS = "EcoreImport";
 	private static final String JSON_KEY_UNCHANGEABLES = "UnchangeableRules";
 	private static final String JSON_KEY_DATATYPES = "DatatypeRules";
 	private static final String JSON_KEY_TERMINALS = "TerminalRules";
@@ -138,7 +136,6 @@ public final class DomlGrammarBuilder {
 	 */
 	private void initializeDomlGrammarBuilder() {
 		fillGrammarDeclaration();
-		fillImports();
 		fillUnchangeableRules();
 		fillDatatypeRules();
 		fillTerminalRules();
@@ -152,7 +149,6 @@ public final class DomlGrammarBuilder {
 	 */
 	public void loadFixedRulesFromJson() {
 		loadGrammarDeclaration();
-		loadImports();
 		loadUnchangeableRules();
 		loadDatatypeRules();
 		loadTerminalRules();
@@ -224,58 +220,50 @@ public final class DomlGrammarBuilder {
 		for(EPackage ePackage : rootPackage.getESubpackages()) {
 			for(EClassifier eClassifier : ePackage.getEClassifiers()) {
 				if(eClassifier instanceof EClass) {
-					if(!domlElementEClassifierFound || !concreteElementEClassifierFound) {
-						if(eClassifier.getName().equals(DomlSpecialClasses.DOML_ELEMENT.getClassName())) {
-							domlElementEClassifier = eClassifier;
-							domlElementEClassifierFound = true;
-						}
-						else if(eClassifier.getName().equals(DomlSpecialClasses.CONCRETE_ELEMENT.getClassName())) {
-							concreteElementEClassifier = eClassifier;
-							concreteElementEClassifierFound = true;
-						}
-					}
 					
-					Object eSuperTypesObject = eClassifier.eGet(EcorePackage.eINSTANCE.getEClass_ESuperTypes());
-					EList<EClassifier> eSuperTypes;
+					if(!DomlReservedClasses.getClassNames().contains(eClassifier.getName())) {
 					
-					if(isEListOfEClassifier(eSuperTypesObject)) { 
-						eSuperTypes = (EList<EClassifier>)eSuperTypesObject;
+						// Look for "DOMLElement" and "ConcreteElement" classes.
+						if(!domlElementEClassifierFound || !concreteElementEClassifierFound) {
+							if(eClassifier.getName().equals(DomlSpecialClasses.DOML_ELEMENT.getClassName())) {
+								domlElementEClassifier = eClassifier;
+								domlElementEClassifierFound = true;
+							}
+							else if(eClassifier.getName().equals(DomlSpecialClasses.CONCRETE_ELEMENT.getClassName())) {
+								concreteElementEClassifier = eClassifier;
+								concreteElementEClassifierFound = true;
+							}
+						}
 						
-						if(!eSuperTypes.isEmpty()) {
-							supertypesHierarchy.put(eClassifier, eSuperTypes);
-						}
-					}
-					else {
-						throw new DomlGrammarBuilderException("Error while initializing EClassifier Hierarchy: eSuperTypesObject of "
-								+ eClassifier.getName() + " is not of type EList<EClassifier>.");
-					}
-					
-					if(!eSuperTypes.isEmpty()) {
 						
-						for(EClassifier eSuperType : eSuperTypes) {
-							if(subtypesHierarchy.containsKey(eSuperType)) {
-								subtypesHierarchy.get(eSuperType).add(eClassifier); 
-							} else { 
-								List<EClassifier> eSubTypes = new ArrayList<EClassifier>();
-								eSubTypes.add(eClassifier);
-								subtypesHierarchy.put(eSuperType, eSubTypes); 
-							} 
+						Object eAllSuperTypesObject = eClassifier.eGet(EcorePackage.eINSTANCE.getEClass_EAllSuperTypes());
+						EList<EClassifier> eAllSuperTypes;
+						
+						if(isEListOfEClassifier(eAllSuperTypesObject)) { 
+							eAllSuperTypes = (EList<EClassifier>)eAllSuperTypesObject;
+							
+							if(!eAllSuperTypes.isEmpty()) {
+								
+								supertypesHierarchy.put(eClassifier, eAllSuperTypes);
+							}
 						}
-					}
-					
-					Object eAllSuperTypesObject = eClassifier.eGet(EcorePackage.eINSTANCE.getEClass_ESuperTypes());
-					EList<EClassifier> eAllSuperTypes;
-					
-					if(isEListOfEClassifier(eAllSuperTypesObject)) { 
-						eAllSuperTypes = (EList<EClassifier>)eAllSuperTypesObject;
+						else {
+							throw new DomlGrammarBuilderException("Error while initializing EClassifier Hierarchy: eAllSuperTypesObject of "
+									+ eClassifier.getName() + " is not of type EList<EClassifier>.");
+						}
 						
 						if(!eAllSuperTypes.isEmpty()) {
-							supertypesHierarchy.put(eClassifier, eAllSuperTypes);
+							
+							for(EClassifier eSuperType : eAllSuperTypes) {
+								if(subtypesHierarchy.containsKey(eSuperType)) {
+									subtypesHierarchy.get(eSuperType).add(eClassifier);
+								} else { 
+									List<EClassifier> eSubTypes = new ArrayList<EClassifier>();
+									eSubTypes.add(eClassifier);
+									subtypesHierarchy.put(eSuperType, eSubTypes); 
+								} 
+							}
 						}
-					}
-					else {
-						throw new DomlGrammarBuilderException("Error while initializing EClassifier Hierarchy: eAllSuperTypesObject of "
-								+ eClassifier.getName() + " is not of type EList<EClassifier>.");
 					}
 				}
 				// Else: Basically, EEnum instead of EClass.
@@ -283,6 +271,9 @@ public final class DomlGrammarBuilder {
 		}
 		if(!domlElementEClassifierFound) {
 			throw new DomlGrammarBuilderException("DomlGrammarBuilder: EClassifier not found for DOMLElement class.");
+		}
+		if(!concreteElementEClassifierFound) {
+			throw new DomlGrammarBuilderException("DomlGrammarBuilder: EClassifier not found for ConcreteElement class.");
 		}
 	}
 	
@@ -316,26 +307,44 @@ public final class DomlGrammarBuilder {
 	 * is built by adding the package name as a prefix to the classifier name.
 	 */
 	private void fillRulesNames(EPackage rootPackage) {
+		
 		rulesNames = new HashMap<EClassifier, String>();
 		
 		for(EPackage ePackage : rootPackage.getESubpackages()) {
-			// Exclude Optimization Layer: since it is completely unchangeable, each class will be loaded from JSON.
-			if(!ePackage.getNsURI().equals(DomlPackage.OPTIMIZATION.getNsURI())) {
 			
-				for(EClassifier eClassifier : ePackage.getEClassifiers()) {
-					String className = eClassifier.getName();
-					String ruleName = new String();
-	
-					// Handling duplicated names in different layers by inserting the package name as prefix.
-					if(rulesNames.containsValue(className)) {
-						String packageName = eClassifier.getEPackage().getName();
-						// Capitalize first letter.
-						String rulePrefix = packageName.substring(0,1).toUpperCase() + packageName.substring(1);
-						ruleName+=rulePrefix;
-					}
-					ruleName+=className;
+			for(EClassifier eClassifier : ePackage.getEClassifiers()) {
+				
+				String className = eClassifier.getName();
+				
+				// Include only actually generated rules names.
+				if(!DomlReservedClasses.getClassNames().contains(className)) {
 					
-					rulesNames.put(eClassifier, ruleName);
+					// If the rule is not included in the fixed content, build the rule name string.
+					if(!DomlSpecialClasses.getClassNames().contains(className)) {
+						
+						String ruleName = new String();
+						
+						// Handling duplicated names in different layers by inserting the package name as prefix.
+						if(rulesNames.containsValue(className)) {
+							String packageName = eClassifier.getEPackage().getName();
+							// Capitalize first letter.
+							String rulePrefix = packageName.substring(0,1).toUpperCase() + packageName.substring(1);
+							ruleName+=rulePrefix;
+						}
+						ruleName+=className;
+						
+						rulesNames.put(eClassifier, ruleName);
+					}
+					// Otherwise, retrieve its name from the enumeration.
+					else {
+						String ruleName = DomlSpecialClasses.getRuleName(className);
+						/*
+						 * No need to check if null, since it is impossible by construction (entering
+						 * else condition only if className is contained in DomlSpecialClasses).
+						 */
+						rulesNames.put(eClassifier, ruleName);
+					}
+					
 				}
 			}
 		}
@@ -359,18 +368,20 @@ public final class DomlGrammarBuilder {
 					
 					// Create rules only for currently implemented classes in DOML.
 					if(!DomlReservedClasses.getClassNames().contains(eClassifier.getName())) {
+						
 						if(eClassifier.eClass().equals(EcorePackage.eINSTANCE.getEClass())) {
 							// ABSTRACT CLASSES
 							if((boolean) eClassifier.eGet(EcorePackage.eINSTANCE.getEClass_Abstract())) {
 								// NOTE: Currently generating fragment only for two abstract classes (DomlElement, ConcreteElement).
-								if(eClassifier == domlElementEClassifier || eClassifier == concreteElementEClassifier) {
+								if(eClassifier == domlElementEClassifier) {
+									tmpBld.append(buildAbstractClassFragment(eClassifier, true));
+								}
+								else if(eClassifier == concreteElementEClassifier) {
+									tmpBld.append(buildAbstractClassFragment(eClassifier, false));
+								}
+								else if(!DomlSpecialClasses.getClassNames().contains(eClassifier.getName())){
 									tmpBld.append(buildAbstractClassRule(eClassifier));
 								}
-								/*
-								 * Else: Do not generate anything and simply skip the class.
-								 * Please note that some abstract classes are included in the unchangeable classes
-								 * and are, therefore, loaded as fixed content.
-								 */
 							} 
 							// CONCRETE CLASSES
 							else {
@@ -430,11 +441,11 @@ public final class DomlGrammarBuilder {
 			for(EObject obj : eAllContents) {
 				if(obj instanceof EReference) {
 					EReference eRef = (EReference) obj;
-					if(eRef.getName().equals(DomlSpecialClasses.DOML_MODEL_CONCRETIZATIONS_REFERENCE)) {
+					if(eRef.getName().equals(DomlSpecialClasses.DOML_MODEL_CONCRETIZATIONS_REF)) {
 						eAttributesAndReferences.add(obj);
 						concretizationsRef = eRef;
 					}
-					else if(eRef.getName().equals(DomlSpecialClasses.DOML_MODEL_ACTIVE_CONCRETE_INFRASTRUCTURE_REFERENCE)) {
+					else if(eRef.getName().equals(DomlSpecialClasses.DOML_MODEL_ACTIVE_CONCRETE_INFRASTRUCTURE_REF)) {
 						activeInfrastructureRef = eRef;
 					}
 					else {
@@ -443,8 +454,8 @@ public final class DomlGrammarBuilder {
 				}
 				else if(obj instanceof EAttribute) {
 					EAttribute eAttr = (EAttribute) obj;
-					if(eAttr.getName().equals(DomlSpecialClasses.DOML_MODEL_VERSION_ATTRIBUTE)) {
-						bld.append(handleAttribute(eClassifier, eAttr, DomlSpecialClasses.DOML_MODEL_VERSION_ATTRIBUTE) + System.lineSeparator());
+					if(eAttr.getName().equals(DomlSpecialClasses.DOML_MODEL_VERSION_ATTR)) {
+						bld.append(handleAttribute(eClassifier, eAttr, DomlSpecialClasses.DOML_MODEL_VERSION_ATTR_KEYWORD) + System.lineSeparator());
 					}
 					else {
 						eAttributesAndReferences.add(obj);
@@ -470,7 +481,9 @@ public final class DomlGrammarBuilder {
 						// Please note that if isContainment() == true -> val, else -> ref (Emfatic notation).
 						EReference eRef = (EReference) obj;
 						if(eRef.equals(concretizationsRef)) {
-							bld.append(handleCompositeSelectionReference(eClassifier, eRef, activeInfrastructureRef, numOfTabs));
+							bld.append(handleCompositeSelectionReference(eClassifier, eRef,
+									DomlSpecialClasses.DOML_MODEL_CONCRETIZATIONS_REF_KEYWORD, activeInfrastructureRef,
+									DomlSpecialClasses.DOML_MODEL_ACTIVE_CONCRETE_INFRASTRUCTURE_REF_KEYWORD, numOfTabs));
 						}
 						else {
 							bld.append(handleReference(eClassifier, eRef, null));
@@ -549,6 +562,8 @@ public final class DomlGrammarBuilder {
 			}
 		}
 		
+		bld.append(System.lineSeparator());
+		
 		bld.append(";" + System.lineSeparator() + System.lineSeparator());
 		
 		rule = bld.toString();
@@ -563,8 +578,7 @@ public final class DomlGrammarBuilder {
 	 * @return
 	 * @throws DomlGrammarBuilderException
 	 */
-	private String buildAbstractClassRule(EClassifier eClassifier) throws DomlGrammarBuilderException {
-		String rule;
+	private String buildAbstractClassFragment(EClassifier eClassifier, boolean isDomlElementClass) throws DomlGrammarBuilderException {
 		StringBuilder bld = new StringBuilder();
 		String name = eClassifier.getName();
 		
@@ -584,8 +598,19 @@ public final class DomlGrammarBuilder {
 			EList<EObject> eAttributesAndReferences = ECollections.newBasicEList();
 			
 			for(EObject obj : eAllContents) {
-				if((obj instanceof EReference) || (obj instanceof EAttribute)) {
+				if((obj instanceof EReference)) {
 					eAttributesAndReferences.add(obj);
+				}
+				else if((obj instanceof EAttribute)) {
+					if(isDomlElementClass) {
+						EAttribute eAttr = (EAttribute) obj;
+						if(!eAttr.getName().equals(DomlSpecialClasses.DOML_ELEMENT_NAME_ATTR)) {
+							eAttributesAndReferences.add(obj);
+						}
+					}
+					else {
+						eAttributesAndReferences.add(obj);
+					}
 				}
 			}
 			
@@ -594,9 +619,43 @@ public final class DomlGrammarBuilder {
 			
 		bld.append(";" + System.lineSeparator() + System.lineSeparator());
 		
-		rule = bld.toString();
+		return bld.toString();
+	}
+	
+	private String buildAbstractClassRule(EClassifier eClassifier) throws DomlGrammarBuilderException {
+		StringBuilder bld = new StringBuilder();
+		String name = eClassifier.getName();
+		String ruleName = rulesNames.get(eClassifier);
 		
-		return rule;
+		// Append the rule name, getting it from rulesNames.
+		bld.append(ruleName);
+		
+		bld.append(" returns ");
+		bld.append(eClassifier.getEPackage().getNsPrefix() + "::" + name);
+		bld.append(':' + System.lineSeparator());
+		bld.append("\t");
+		
+		List<EClassifier> subtypes = subtypesHierarchy.get(eClassifier);
+		
+		int subtypesSize = subtypes.size();
+		int lastIndex = subtypesSize - 1;
+		
+		for(int i = 0; i < subtypesSize; i++) {
+			String subtypeRuleName = rulesNames.get(subtypes.get(i));
+			if(subtypeRuleName != null) {
+				bld.append(subtypeRuleName);
+				if(i < lastIndex) {
+					bld.append(" | ");
+				}
+			}
+
+		}
+
+		bld.append(System.lineSeparator());
+		
+		bld.append(";" + System.lineSeparator() + System.lineSeparator());
+		
+		return bld.toString();
 	}
 	
 	/*
@@ -632,7 +691,12 @@ public final class DomlGrammarBuilder {
 			}
 		}
 		
-		// TODO QUESTION: What's the best way to handle it?
+		/*
+		 * NOTE: It was decided to check the content condition rather than using an enumeration.
+		 * This will allow to automatically detect whether new classes for which content
+		 * could be presented in unspecified order have been introduced (mainly, introduction
+		 * of new layers classes, but potentially also other kinds of elements).
+		 */
 		//boolean isUnordered = DomlUnorderedClasses.getClassNames().contains(name);
 		boolean isUnordered = isUnorderedClass(eAttributesAndReferences);
 		
@@ -662,7 +726,6 @@ public final class DomlGrammarBuilder {
 				? replaceKeywordWithEnum.get(ruleName)
 				: getClassKeyword(ruleName));
 		
-		//boolean extendsDomlElement = subtypesHierarchy.get(domlElementEClassifier).contains(eClassifier);
 		List<EClassifier> supertypes = supertypesHierarchy.get(eClassifier);
 		boolean extendsDomlElement;
 		boolean extendsConcreteElement;
@@ -923,8 +986,10 @@ public final class DomlGrammarBuilder {
 	 * Concretizations contained in the DOMLModel class definition: in fact,
 	 * within the same group, the active concrete infrastructure is specified.
 	 */
-	private String handleCompositeSelectionReference(EClassifier eClassifier, EReference mainRef, EReference selectedElemRef, int numOfTabs) throws DomlGrammarBuilderException {
-		if(mainRef.getEReferenceType().equals(selectedElemRef.getEReferenceType())) {
+	private String handleCompositeSelectionReference(EClassifier eClassifier, 
+			EReference mainRef, String mainKeyword, EReference selectedElemRef,
+			String selectedElemKeyword, int numOfTabs) throws DomlGrammarBuilderException {
+		if(!mainRef.getEReferenceType().equals(selectedElemRef.getEReferenceType())) {
 			throw new DomlGrammarBuilderException(mainRef.getName() + " is not a composite reference.\n"
 					+ "Main Reference type: " + mainRef.getEReferenceType()
 					+ ", Selected Element Reference type: " + selectedElemRef.getEReferenceType());
@@ -944,8 +1009,16 @@ public final class DomlGrammarBuilder {
 		if(!isMainRefMultiple || !isMainRefVal) {
 			throw new DomlGrammarBuilderException(mainRef.getName() + " is not a composite reference: isVal=" + isMainRefVal + ", isMultiple=" + isMainRefMultiple);
 		}
-		// This keyword can't be null.
-		String mainRefKeyword = getReferenceKeyword(rulesNames.get(eClassifier), mainRef.getName(), false);
+		
+		String mainRefKeyword;
+		
+		if(mainKeyword != null) {
+			mainRefKeyword = mainKeyword;
+		}
+		else {
+			// This keyword can't be null.
+			mainRefKeyword = getReferenceKeyword(rulesNames.get(eClassifier), mainRef.getName(), false);
+		}
 		EClass mainRefClass = mainRef.getEReferenceType();
 		EClassifier mainRefClassifier = mainRefClass.getEPackage().getEClassifier(mainRefClass.getName());
 		String mainRefRuleName = rulesNames.get(mainRefClassifier);
@@ -982,8 +1055,15 @@ public final class DomlGrammarBuilder {
 			throw new DomlGrammarBuilderException(selectedElemRef.getName() + " is not a containment reference: isVal=" + isSelectedElemRefVal);
 		}
 		
-		// This keyword can't be null.
-		String selectedElemRefKeyword = getReferenceKeyword(eClassifier.getName(), selectedElemRef.getName(), false);
+		String selectedElemRefKeyword;
+		
+		if(selectedElemKeyword != null) {
+			selectedElemRefKeyword = selectedElemKeyword;
+		}
+		else {
+			// This keyword can't be null. 
+			selectedElemRefKeyword = getReferenceKeyword(eClassifier.getName(), selectedElemRef.getName(), false);
+		}
 		EClass selectedElemRefClass = selectedElemRef.getEReferenceType();
 		String selectedElemRefValue = "[" + selectedElemRefClass.getEPackage().getNsPrefix() + "::" + selectedElemRefClass.getName() + "]";
 		
@@ -1093,8 +1173,8 @@ public final class DomlGrammarBuilder {
 						? enclosingOpen
 						: "'{'"
 						);
+				refBld.append(" ");
 			}
-			refBld.append(" ");
 			refBld.append(eRef.getName());
 			refBld.append("+=");
 			if(isVal) {
@@ -1104,9 +1184,9 @@ public final class DomlGrammarBuilder {
 				refBld.append(refValue);
 			}
 			refBld.append("*");
-			refBld.append(" ");
 			if(keyword != null) {
 				String enclosingClose = getEnclosingSymbol(rulesNames.get(eClassifier), eRef.getName(), false);
+				refBld.append(" ");
 				refBld.append(
 						(enclosingClose != null)
 						? enclosingClose
@@ -1128,7 +1208,8 @@ public final class DomlGrammarBuilder {
 		refBld.append(")");
 		
 		if(isOptional) {
-			refBld.append("?");
+			if((isMultiple && keyword != null) || !isMultiple)
+				refBld.append("?");
 		}
 		
 		return refBld.toString();
@@ -1239,7 +1320,8 @@ public final class DomlGrammarBuilder {
 			return rulesNames.get(attrType);
 		}
 		else {
-			throw new DomlGrammarBuilderException("DomlGrammarBuilder: Unhandled attribute type found: " + attrType);
+			throw new DomlGrammarBuilderException("DomlGrammarBuilder: Unhandled attribute type found: " + attrType.getName()
+				+ ", EAttribute: " + eAttr.getName());
 		}
 	}
 	
@@ -1458,7 +1540,8 @@ public final class DomlGrammarBuilder {
 	private StringBuilder buildGrammar(StringBuilder grammarBody) {
 		final StringBuilder xtextContent = new StringBuilder();
 		xtextContent.append(grammarDeclaration);
-		xtextContent.append(imports);
+		// Importing Eclipse Ecore.
+		appendString(xtextContent, "import \"" + EcorePackage.eNS_URI + "\" as " + EcorePackage.eNS_PREFIX + System.lineSeparator());
 		xtextContent.append(grammarBody);
 		xtextContent.append(unchangeables);
 		xtextContent.append(datatypes);
@@ -1559,18 +1642,6 @@ public final class DomlGrammarBuilder {
 		}
 	}
 	
-	private void loadImports() {
-		try {
-			imports = new StringBuilder();
-			loadElementFromJson(JSON_KEY_IMPORTS, imports);
-			imports.append(System.lineSeparator());
-		} 
-		catch (DomlGrammarBuilderException e) {
-			e.printStackTrace();
-			fillImports();
-		}
-	}
-	
 	private void loadTerminalRules() {
 		try {
 			terminals = new StringBuilder();
@@ -1617,12 +1688,6 @@ public final class DomlGrammarBuilder {
 		grammarDeclaration.append(System.lineSeparator());
 	}
 	
-	private void fillImports() {
-		imports = new StringBuilder();
-		appendString(imports, "import \"http://www.eclipse.org/emf/2002/Ecore\" as ecore");
-		imports.append(System.lineSeparator());
-	}
-	
 	private void fillTerminalRules() {
 		terminals = new StringBuilder();
 		List<String> terminalRules = new ArrayList<String>();
@@ -1642,7 +1707,6 @@ public final class DomlGrammarBuilder {
 		for (final String terminalRule : terminalRules) {
 			appendString(terminals, terminalRule);
 		}
-		// terminals.append(System.lineSeparator());
 	}
 
 	

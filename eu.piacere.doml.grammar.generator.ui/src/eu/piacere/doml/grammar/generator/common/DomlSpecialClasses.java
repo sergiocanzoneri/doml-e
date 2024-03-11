@@ -13,26 +13,38 @@ public enum DomlSpecialClasses {
 	
 	/* 
 	 * Classes that need to remain unchanged (or can be only partially extended) in order for DOML to work properly.
-	 * Please note that all classes belonging to Optimization layer are not
-	 * included in this list, but they are unchangeable in order for the optimizer
-	 * to keep working even when DOML is updated. For this reason, they are loaded
-	 * as fixed content.
+	 * Please note that all classes belonging to Optimization layer are included in this list,
+	 * as they are unchangeable in order for the optimizer to keep working even when DOML is updated.
+	 * 
+	 * With the exception of the first three classes, which are built dynamically,
+	 * all the others are loaded as fixed content.
 	 */
-	DOML_MODEL(DomlPackage.COMMONS, "DOMLModel"),
-	DOML_ELEMENT(DomlPackage.COMMONS, "DOMLElement"),
-	PROPERTY(DomlPackage.COMMONS, "Property"),
-	SPROPERTY(DomlPackage.COMMONS, "SProperty"),
-	BPROPERTY(DomlPackage.COMMONS, "BProperty"),
-	IPROPERTY(DomlPackage.COMMONS, "IProperty"),
-	FPROPERTY(DomlPackage.COMMONS, "FProperty"),
-	LIST_PROPERTY(DomlPackage.COMMONS, "ListProperty"),
-	CONFIGURATION(DomlPackage.COMMONS, "Configuration"),
-	SOFTWARE_INTERFACE(DomlPackage.APPLICATION, "SoftwareInterface"),
-	MONITORING_RULE(DomlPackage.INFRASTRUCTURE, "MonitoringRule"),
-	CONCRETE_ELEMENT(DomlPackage.CONCRETE, "ConcreteElement"),
-	REQUIREMENT(DomlPackage.COMMONS, "Requirement"),
-	RANGED_REQUIREMENT(DomlPackage.COMMONS, "RangedRequirement"),
-	ENUMERATED_REQUIREMENT(DomlPackage.COMMONS, "EnumeratedRequirement");
+	DOML_MODEL(DomlPackage.COMMONS, "DOMLModel", "DOMLModel"),
+	DOML_ELEMENT(DomlPackage.COMMONS, "DOMLElement", "DOMLElement"),
+	CONCRETE_ELEMENT(DomlPackage.CONCRETE, "ConcreteElement", "ConcreteElement"),
+	
+	PROPERTY(DomlPackage.COMMONS, "Property", "Property"),
+	SPROPERTY(DomlPackage.COMMONS, "SProperty", "SProperty"),
+	BPROPERTY(DomlPackage.COMMONS, "BProperty", "BProperty"),
+	IPROPERTY(DomlPackage.COMMONS, "IProperty", "IProperty"),
+	FPROPERTY(DomlPackage.COMMONS, "FProperty", "FProperty"),
+	LIST_PROPERTY(DomlPackage.COMMONS, "ListProperty", "ListProperty"),
+	DEPLOYMENT(DomlPackage.COMMONS, "Deployment", "Deployment"),
+	SOFTWARE_INTERFACE(DomlPackage.APPLICATION, "SoftwareInterface", "InterfaceDefinition"),
+	MONITORING_RULE(DomlPackage.INFRASTRUCTURE, "MonitoringRule", "MonitoringRule"),
+	REQUIREMENT(DomlPackage.COMMONS, "Requirement", "RequirementDefinition"),
+	RANGED_REQUIREMENT(DomlPackage.COMMONS, "RangedRequirement", "RangedRequirement"),
+	ENUMERATED_REQUIREMENT(DomlPackage.COMMONS, "EnumeratedRequirement", "EnumeratedRequirement"),
+	
+	OPTIMIZATION_LAYER(DomlPackage.OPTIMIZATION, "OptimizationLayer", "Optimization"),
+	OPTIMIZATION_SOLUTION(DomlPackage.OPTIMIZATION, "OptimizationSolution", "OptimizationSolution"),
+	OBJECTIVE_VALUE(DomlPackage.OPTIMIZATION, "ObjectiveValue", "ObjectiveValue"),
+	OPTIMIZATION_OBJECTIVE(DomlPackage.OPTIMIZATION, "OptimizationObjective", "OptimizationObjective"),
+	COUNT_OBJECTIVE(DomlPackage.OPTIMIZATION, "CountObjective", "CountObjective"),
+	MEASURABLE_OBJECTIVE(DomlPackage.OPTIMIZATION, "MeasurableObjective", "MeasurableObjective");
+	
+	// This value refers to the special attribute "name", used as ID for DOMLElement class instances.
+	public static final String DOML_ELEMENT_NAME_ATTR = "name";
 
 	/*
 	 * These values refer to the special reference "nodeSpecificMonitoring" and to
@@ -50,19 +62,24 @@ public enum DomlSpecialClasses {
 	
 	/*
 	 * These values refer to special attributes and references within the DOMLModel class,
-	 * which should not be modified by the user for DOML and DOML-E tools to work properly.
+	 * which should not be modified by the user for DOML, DOML-E tools and optimizer to work properly.
 	 */
-	public static final String DOML_MODEL_VERSION_ATTRIBUTE = "version";
-	public static final String DOML_MODEL_CONCRETIZATIONS_REFERENCE = "concretizations";
-	public static final String DOML_MODEL_ACTIVE_CONCRETE_INFRASTRUCTURE_REFERENCE = "activeInfrastructure";
+	public static final String DOML_MODEL_VERSION_ATTR = "version";
+	public static final String DOML_MODEL_VERSION_ATTR_KEYWORD = "'version'";
+	public static final String DOML_MODEL_CONCRETIZATIONS_REF = "concretizations";
+	public static final String DOML_MODEL_CONCRETIZATIONS_REF_KEYWORD = "'concretizations'";
+	public static final String DOML_MODEL_ACTIVE_CONCRETE_INFRASTRUCTURE_REF = "activeInfrastructure";
+	public static final String DOML_MODEL_ACTIVE_CONCRETE_INFRASTRUCTURE_REF_KEYWORD = "'active'";
 	
 	
 	private DomlPackage domlPackage;
 	private String className;
+	private String ruleName;
 	
-	DomlSpecialClasses(DomlPackage domlPackage, String className) {
+	DomlSpecialClasses(DomlPackage domlPackage, String className, String ruleName) {
 		this.domlPackage = domlPackage;
 		this.className = className;
+		this.ruleName = ruleName;
 	}
 
 	public DomlPackage getDomlPackage() {
@@ -79,5 +96,18 @@ public enum DomlSpecialClasses {
 			classNames.add(specialClass.getClassName());
 		}
 		return classNames;
+	}
+
+	public String getRuleName() {
+		return ruleName;
+	}
+	
+	public static String getRuleName(String className) {
+		for(DomlSpecialClasses specialClass : values()) {
+			if(className.equals(specialClass.getClassName())) {
+				return specialClass.ruleName;
+			}
+		}
+		return null;
 	}
 }
