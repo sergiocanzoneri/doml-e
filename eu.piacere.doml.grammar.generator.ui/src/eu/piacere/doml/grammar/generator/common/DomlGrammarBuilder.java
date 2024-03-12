@@ -800,15 +800,12 @@ public final class DomlGrammarBuilder {
 			int eReferencesSize = eReferences.size();
 			int lastIndex = eReferencesSize - 1;
 			
-			if(eReferencesSize>1) {
-				bld.append("\t\t(" + System.lineSeparator());
-			}
+
+			bld.append("\t\t(" + System.lineSeparator());
 			
 			for(int i = 0; i < eReferencesSize; i++) {
 				EObject obj = eReferences.get(i);
-				bld.append("\t\t");
-				if(eReferencesSize>1)
-					bld.append("\t");
+				bld.append("\t\t\t");
 
 				EReference eRef = (EReference) obj;
 				bld.append(handleReferenceUnordered(eClassifier, eRef));
@@ -819,11 +816,8 @@ public final class DomlGrammarBuilder {
 				bld.append(System.lineSeparator());
 
 			}
-			if(eReferencesSize>1) {
-				bld.append("\t\t)*" + System.lineSeparator());
-			}
-			else {
-				bld.append("*");			}
+
+			bld.append("\t\t)*" + System.lineSeparator());
 		}
 		
 		return bld.toString();
