@@ -60,8 +60,8 @@ public final class DomlGrammarBuilder {
 	private static final String XTEXT_BOOLEAN_ELEM = "Boolean";
 	
 	// Two maps for easily accessing sub-types and super-types of a given DOML EClassifier.
-	private Map<EClassifier, List<EClassifier>> subtypesHierarchy;
-	private Map<EClassifier, List<EClassifier>> supertypesHierarchy;
+	private Map<EClassifier, List<EClassifier>> directSubtypesHierarchy;
+	private Map<EClassifier, List<EClassifier>> allSupertypesHierarchy;
 	
 	// A map containing the rule names associated with the classifiers.
 	private Map<EClassifier, String> rulesNames;
@@ -206,17 +206,17 @@ public final class DomlGrammarBuilder {
 	/***
 	 * Initializes two maps storing the EClassifier hierarchy within the DOML metamodel:
 	 * one will be containing the list of all super-types for each EClassifier, the other
-	 * one will be containing the list of all sub-types for each of them.
+	 * one will be containing the list of direct sub-types for each of them.
 	 * @param rootPackage the DOML root package
-	 * @throws DomlGrammarBuilderException either if the eAllSuperTypes lists is not instance of EList<EClassifier>
-	 * or if the DOMLElement or the ConcreteElement class is not found.
+	 * @throws DomlGrammarBuilderException if either the eSuperTypes or the eAllSuperTypes list is not
+	 * instance of EList<EClassifier> or if either the DOMLElement or the ConcreteElement class is not found.
 	 * This is supposed to never happen.
 	 */
 	private void initializeEClassifierHierarchy(EPackage rootPackage) throws DomlGrammarBuilderException {
 		boolean domlElementEClassifierFound = false;
 		boolean concreteElementEClassifierFound = false;
-		subtypesHierarchy = new HashMap<EClassifier, List<EClassifier>>();
-		supertypesHierarchy = new HashMap<EClassifier, List<EClassifier>>();
+		directSubtypesHierarchy = new HashMap<EClassifier, List<EClassifier>>();
+		allSupertypesHierarchy = new HashMap<EClassifier, List<EClassifier>>();
 		
 		for(EPackage ePackage : rootPackage.getESubpackages()) {
 			for(EClassifier eClassifier : ePackage.getEClassifiers()) {
@@ -238,30 +238,40 @@ public final class DomlGrammarBuilder {
 						
 						
 						Object eAllSuperTypesObject = eClassifier.eGet(EcorePackage.eINSTANCE.getEClass_EAllSuperTypes());
-						EList<EClassifier> eAllSuperTypes;
+						Object eSuperTypesObject = eClassifier.eGet(EcorePackage.eINSTANCE.getEClass_ESuperTypes());
+						EList<EClassifier> eAllSuperTypes, eSuperTypes;
+						boolean isEAllSuperTypesEList = isEListOfEClassifier(eAllSuperTypesObject);
+						boolean isESuperTypesEList = isEListOfEClassifier(eSuperTypesObject);
 						
-						if(isEListOfEClassifier(eAllSuperTypesObject)) { 
+						if(isEAllSuperTypesEList && isESuperTypesEList) { 
 							eAllSuperTypes = (EList<EClassifier>)eAllSuperTypesObject;
-							
+							eSuperTypes = (EList<EClassifier>)eSuperTypesObject;
 							if(!eAllSuperTypes.isEmpty()) {
 								
-								supertypesHierarchy.put(eClassifier, eAllSuperTypes);
+								allSupertypesHierarchy.put(eClassifier, eAllSuperTypes);
 							}
 						}
-						else {
+						else if(!isEAllSuperTypesEList) {
 							throw new DomlGrammarBuilderException("Error while initializing EClassifier Hierarchy: eAllSuperTypesObject of "
 									+ eClassifier.getName() + " is not of type EList<EClassifier>.");
 						}
+						else if(!isESuperTypesEList) {
+							throw new DomlGrammarBuilderException("Error while initializing EClassifier Hierarchy: eSuperTypesObject of "
+									+ eClassifier.getName() + " is not of type EList<EClassifier>.");
+						}
+						else {
+							throw new DomlGrammarBuilderException("Error while initializing EClassifier Hierarchy: eSuperTypesObject and"
+									+ " eAllSuperTypesObject of " + eClassifier.getName() + " are not of type EList<EClassifier>.");
+						}
 						
-						if(!eAllSuperTypes.isEmpty()) {
-							
-							for(EClassifier eSuperType : eAllSuperTypes) {
-								if(subtypesHierarchy.containsKey(eSuperType)) {
-									subtypesHierarchy.get(eSuperType).add(eClassifier);
+						if(!eSuperTypes.isEmpty()) {
+							for(EClassifier eSuperType : eSuperTypes) {
+								if(directSubtypesHierarchy.containsKey(eSuperType)) {
+									directSubtypesHierarchy.get(eSuperType).add(eClassifier);
 								} else { 
 									List<EClassifier> eSubTypes = new ArrayList<EClassifier>();
 									eSubTypes.add(eClassifier);
-									subtypesHierarchy.put(eSuperType, eSubTypes); 
+									directSubtypesHierarchy.put(eSuperType, eSubTypes); 
 								} 
 							}
 						}
@@ -381,7 +391,9 @@ public final class DomlGrammarBuilder {
 									tmpBld.append(buildAbstractClassFragment(eClassifier, false));
 								}
 								else if(!DomlSpecialClasses.getClassNames().contains(eClassifier.getName())){
-									tmpBld.append(buildAbstractClassRule(eClassifier));
+									if(directSubtypesHierarchy.get(eClassifier) != null) {
+										tmpBld.append(buildAbstractClassRule(eClassifier));
+									}
 								}
 							} 
 							// CONCRETE CLASSES
@@ -636,13 +648,13 @@ public final class DomlGrammarBuilder {
 		bld.append(':' + System.lineSeparator());
 		bld.append("\t");
 		
-		List<EClassifier> subtypes = subtypesHierarchy.get(eClassifier);
+		List<EClassifier> directSubtypes = directSubtypesHierarchy.get(eClassifier);
 		
-		int subtypesSize = subtypes.size();
-		int lastIndex = subtypesSize - 1;
+		int directSubtypesSize = directSubtypes.size();
+		int lastIndex = directSubtypesSize - 1;
 		
-		for(int i = 0; i < subtypesSize; i++) {
-			String subtypeRuleName = rulesNames.get(subtypes.get(i));
+		for(int i = 0; i < directSubtypesSize; i++) {
+			String subtypeRuleName = rulesNames.get(directSubtypes.get(i));
 			if(subtypeRuleName != null) {
 				bld.append(subtypeRuleName);
 				if(i < lastIndex) {
@@ -735,7 +747,7 @@ public final class DomlGrammarBuilder {
 				? replaceKeywordWithEnum.get(ruleName)
 				: getClassKeyword(ruleName));
 		
-		List<EClassifier> supertypes = supertypesHierarchy.get(eClassifier);
+		List<EClassifier> supertypes = allSupertypesHierarchy.get(eClassifier);
 		boolean extendsDomlElement;
 		boolean extendsConcreteElement;
 		
@@ -1369,8 +1381,8 @@ public final class DomlGrammarBuilder {
 		EList<EObject> eAllContents = ECollections.newBasicEList();
 		
 		// Add indirect elements, excluding the ones from DOMLElement and ConcreteElement (using fragments)
-		if(supertypesHierarchy.get(eClassifier) != null) {
-			for(EClassifier supertype : supertypesHierarchy.get(eClassifier)) {
+		if(allSupertypesHierarchy.get(eClassifier) != null) {
+			for(EClassifier supertype : allSupertypesHierarchy.get(eClassifier)) {
 				if(!supertype.getName().equals(DomlSpecialClasses.DOML_ELEMENT.getClassName()) && !supertype.getName().equals(DomlSpecialClasses.CONCRETE_ELEMENT.getClassName()))
 					eAllContents.addAll(supertype.eContents());
 			}
