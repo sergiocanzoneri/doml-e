@@ -1,0 +1,202 @@
+{
+    "DOMLModel": {
+        "DOMLModel": "doml",
+        "version": "version",
+        "activeConfiguration": ["active", "deployment"],
+        "concretizations": "concretizations",
+        "activeInfrastructure": "active",
+        "functionalRequirements": "functional_requirements"
+    },
+    "ApplicationLayer": "application",
+    "InfrastructureLayer": "infrastructure",
+    "Configuration": "deployment",
+    "KeyPair": "key_pair",
+    "UserPass": {
+        "UserPass": "user_pass",
+        "username": "user",
+        "password": "pass"
+    },
+    "DOMLElement": {
+        "contributesTo": "#",
+        "description": "desc",
+        "annotations": "properties"
+    },
+    "SoftwareComponent": {
+        "licenseCost": "cost",
+        "exposedInterfaces": "provides",
+        "consumedInterfaces": "consumes"
+    },
+    "PhysicalComputingNode": {
+        "PhysicalComputingNode": "node",
+        "architecture": "arch",
+        "memory_mb": "mem_mb",
+        "storage": "sto",
+        "configInterface": "config_iface"
+    },
+    "ExecutionEnvironment": {
+        "ExecutionEnvironment": "exec_env",
+        "securityGroups": "security"
+    },
+    "Container": {
+        "architecture": "arch",
+        "memory_mb": "mem_mb",
+        "storage": "sto"
+    },
+    "ContainerVolume": {
+        "ContainerVolume": "cont_vol",
+        "containerVolumeName": "name"
+    },
+    "ContainerNetwork": {
+        "ContainerNetwork": "cont_net",
+        "containerNetworkName": "name"
+    },
+    "FunctionAsAService": "faas",
+    "AutoScalingGroup": {
+        "AutoScalingGroup": "autoscale_group",
+        "groupedNodes": "nodes"
+    },
+    "Swarm": {
+        "groupedNodes": "nodes"
+    },
+    "ContainerGroup": {
+        "ContainerGroup": "cont_group",
+        "groupedNodes": "nodes",
+        "services": "services",
+        "networks": "networks",
+        "volumes": "volumes"
+    },
+    "DBMS": {
+        "DBMS": "dbms",
+        "licenseCost": "cost",
+        "exposedInterfaces": "provides",
+        "consumedInterfaces": "consumes"
+    },
+    "SaaS": {
+        "SaaS": "saas",
+        "exposedInterfaces": "provides",
+        "licenseCost": "cost"
+    },
+    "SaaSDBMS": {
+        "SaaSDBMS": "saas_dbms",
+        "licenseCost": "cost",
+        "databaseName": "name",
+        "engine": "engine",
+        "engineVersion": "engine_version",
+        "exposedInterfaces": "provides"
+    },
+    "Rule": {
+        "cidr": "cidrs",
+        "kind": {
+            "Replace": "Rule"
+        }
+    },
+    "Network": {
+        "Network": "net",
+        "connectedIfaces": "ifaces"
+    },
+    "InternetGateway": "gateway",
+    "Subnet": {
+        "Subnet": "subnet",
+        "connectedTo": "connections",
+        "connectedIfaces": "ifaces"
+    },
+    "NetworkInterface": {
+        "NetworkInterface": "iface",
+        "endPoint": "address",
+        "associated": "security"
+    },
+    "VMImage": {
+        "kind": {
+            "Replace": "uri"
+        },
+        "generatedVMs": "generates"
+    },
+    "ContainerImage": {
+        "ContainerImage": "cont_image",
+        "kind": {
+            "Replace": "uri"
+        },
+        "generatedContainers": "generates"
+    },
+    "VirtualMachine": {
+        "VirtualMachine": "vm",
+        "architecture": "arch",
+        "memory_mb": "mem_mb",
+        "storage": "sto",
+        "sizeDescription": "size",
+        "configInterface": "config_iface"
+    },
+    "SwarmRole": {
+        "kind": {
+            "Replace": "SwarmRole"
+        }
+    },
+    "RuntimeProvider": "provider",
+    "ConcreteElement": {
+        "configurationScript": "script",
+        "refs": "refs_to"
+    },
+    "ConcreteVirtualMachine": "vm",
+    "ConcreteExecutionEnvironment": "exec_env",
+    "ConcreteVMImage": "vm_image",
+    "ConcreteContainerImage": "cont_image",
+    "ConcreteNetwork": {
+        "ConcreteNetwork": "net",
+        "addressRange": "cidr"
+    },
+    "ConcreteSubnet": {
+        "ConcreteSubnet": "subnet",
+        "addressRange": "cidr"
+    },
+    "ConcreteStorage": "storage",
+    "ConcreteFaaS": "faas",
+    "ConcreteAutoScalingGroup": "autoscale_group",
+
+    
+    "GrammarDeclaration": "grammar eu.piacere.doml.Doml hidden(WS, ML_COMMENT, SL_COMMENT)",
+    
+    "UnchangeableRules": [
+        "Property returns commons::Property:\n\t(SProperty | BProperty | IProperty | FProperty | ListProperty)\n;\n",
+        "SProperty returns commons::SProperty:\n\tkey=ID('='value=STRING)\n;\n",
+        "BProperty returns commons::BProperty:\n\tkey=ID('='value=Boolean)\n;\n",
+        "IProperty returns commons::IProperty:\n\tkey=ID('='value=INT)\n;\n",
+        "FProperty returns commons::FProperty:\n\tkey=ID('='value=FLOAT)\n;\n",
+        "ListProperty returns commons::ListProperty:\n\tkey=ID('=' '[' values+=Property* ']')\n;\n",
+        "Deployment returns commons::Deployment:\n\tcomponent=[commons::DeployableElement] '=>' node=[infra::InfrastructureElement]\n;\n",
+        "InterfaceDefinition returns app::SoftwareInterface:\n\t{app::SoftwareInterface} name=ID DOMLElement ('@' endPoint=STRING)?\n;\n",
+        "Location returns infra::Location:\n\t'loc' '{' 'region' region=STRING ('zone' zone=STRING)? '}'\n;\n",
+        "MonitoringRule returns infra::MonitoringRule:\n\t'monitoring_rule' name=ID '{' DOMLElement\n\t\t(\n\t\t\t('cond' condition=STRING) &\n\t\t\t('strat' strategy=STRING) &\n\t\t\t('config' strategyConfigurationString=STRING)?\n\t\t)\n\t'}'\n;\n",
+        "ContainerConfig returns infra::ContainerConfig:\n\t(\n\t\t('cont_port' container_port=INT) &\n\t\t('vm_port' vm_port=INT) &\n\t\t('iface' iface=[infra::NetworkInterface])?\n\t)\n;\n",
+        "ContainerHostConfig returns infra::ContainerHostConfig:\n\t'host' host=[infra::ComputingNode] ('{'\n\t\t(\n\t\t\t('environment' '{' environment_variables+=SProperty+ '}')?\n\t\t\t('cont_config' '{' configurations+=ContainerConfig '}')*\n\t\t)\n\t'}')?\n;\n",
+        "RequirementDefinition returns commons::Requirement:\n\t(=>RangedRequirement | =>EnumeratedRequirement | NormalRequirement)\n;\n",
+        "fragment PartOfRequirement returns commons::Requirement:\n\tname=ID (description=(STRING | STATEMENTS))?\n;\n",
+        "RangedRequirement returns commons::RangedRequirement: \n\tPartOfRequirement\n\t(\n\t\t('@' '{' predicatesOn+=[commons::DOMLElement]+ '}')?\n\t\t('min' min=FLOAT ('max' max=FLOAT)? | 'max' max=FLOAT)\n\t\t'=>' property=STRING\n\t)\n;\n",
+        "EnumeratedRequirement returns commons::EnumeratedRequirement: \n\tPartOfRequirement\n\t(\n\t\t('@' '{' predicatesOn+=[commons::DOMLElement]+ '}')?\n\t\t'values' values+=STRING*\n\t'=>' property=STRING\n\t)\n;\n",
+        "NormalRequirement returns commons::Requirement:\n\tPartOfRequirement\n\t(\n\t\t('@' '{' predicatesOn+=[commons::DOMLElement]+ '}')?\n\t\t'=>' property=STRING\n\t)?\n;\n",
+        "Optimization returns opt::OptimizationLayer:\n\t'optimization' name=ID '{' DOMLElement\n\t\t(\n\t\t\t('hint' startingHint=[commons::Configuration])? &\n\t\t\t('objectives' '{'(objectives+=OptimizationObjective)*'}')? &\n\t\t\t('runtime' '{'('value' runtime=FLOAT 'seconds')?'}')? &\n\t\t\t('nonfunctional_requirements' '{'(nonfunctionalRequirements+=RequirementDefinition)*'}')? &\n\t\t\t(solutions+=OptimizationSolution*)\n\t\t)\n\t'}'\n;\n",
+        "OptimizationSolution returns opt::OptimizationSolution:\n\t'solution' name=ID '{' DOMLElement\n\t\t(\n\t\t\t(objectives=ObjectiveValue) &\n\t\t\t('decisions' '[' decisions+=STRING* ']')\n\t\t)\n\t'}'\n;\n",
+        "ObjectiveValue returns opt::ObjectiveValue:\n\t{opt::ObjectiveValue}\n\t'objectives' '{'\n\t\t(\n\t\t\t('cost' cost=FLOAT 'euro')? &\n\t\t\t('availability' availability=FLOAT '%')? &\n\t\t\t('performance' performance=FLOAT 'metric')?\n\t\t)\n\t'}'\n;\n",
+        "OptimizationObjective returns opt::OptimizationObjective:\n\t(=>CountObjective | MeasurableObjective)\n;\n",
+        "CountObjective returns opt::CountObjective:\n\t'numberOf' property=STRING '=>' kind=ObjectiveKind\n;\n",
+        "MeasurableObjective returns opt::MeasurableObjective:\n\tproperty=STRING '=>' kind=ObjectiveKind\n;\n",
+        "ObjectiveKind: 'max' | 'min';\n"
+    ],
+
+    "DatatypeRules": [
+        "Datatype:\n\t'Integer' | 'Double' | 'Date' | 'String' | 'Object'\n;",
+        "Boolean returns ecore::EBoolean: 'true' | 'false';"
+    ],
+
+    "TerminalRules": [
+        "terminal ID: '^'?('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')*;",
+        "terminal FLOAT returns ecore::EFloat: '-'?DIGITS'.'DIGITS;",
+        "terminal INT returns ecore::EInt: '-'?DIGITS;",
+        "terminal fragment DIGITS: ('0'..'9')+;",
+        "terminal STRING:\n\t'\"' ( '\\\\' . \/* 'b'|'t'|'n'|'f'|'r'|'u'|'\"'|\"'\"|'\\\\' *\/ | !('\\\\'|'\"') )* '\"' |\n\t\"'\" ( '\\\\' . \/* 'b'|'t'|'n'|'f'|'r'|'u'|'\"'|\"'\"|'\\\\' *\/ | !('\\\\'|\"'\") )* \"'\"\n;",
+        "terminal STATEMENTS returns ecore::EString:\n\t'```' -> '```'\n;",
+        "terminal ML_COMMENT : '/*' -> '*/';",
+        "terminal SL_COMMENT : '//' !('\\n'|'\\r')* ('\\r'? '\\n')?;",
+        "terminal WS         : (' '|'\\t'|'\\r'|'\\n')+;",
+        "terminal ANY_OTHER: .;"
+    ]
+}

@@ -31,6 +31,7 @@ public enum DomlSpecialClasses {
 	LIST_PROPERTY(DomlPackage.COMMONS, "ListProperty", "ListProperty"),
 	DEPLOYMENT(DomlPackage.COMMONS, "Deployment", "Deployment"),
 	SOFTWARE_INTERFACE(DomlPackage.APPLICATION, "SoftwareInterface", "InterfaceDefinition"),
+	LOCATION(DomlPackage.INFRASTRUCTURE, "Location", "Location"),
 	MONITORING_RULE(DomlPackage.INFRASTRUCTURE, "MonitoringRule", "MonitoringRule"),
 	CONTAINER_CONFIG(DomlPackage.INFRASTRUCTURE, "ContainerConfig", "ContainerConfig"),
 	/*

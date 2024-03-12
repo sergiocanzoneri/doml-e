@@ -648,13 +648,24 @@ public final class DomlGrammarBuilder {
 		bld.append(':' + System.lineSeparator());
 		bld.append("\t");
 		
+		// We need to get both direct sub-types and indirect ones only extending concrete classes.
 		List<EClassifier> directSubtypes = directSubtypesHierarchy.get(eClassifier);
+		List<EClassifier> subtypes = new ArrayList<EClassifier>(directSubtypes);
 		
-		int directSubtypesSize = directSubtypes.size();
-		int lastIndex = directSubtypesSize - 1;
+		for(EClassifier directSubtype : directSubtypes) {
+			boolean isAbstract = (boolean)directSubtype.eGet(EcorePackage.eINSTANCE.getEClass_Abstract());
+			if(!isAbstract) {
+				if(directSubtypesHierarchy.get(directSubtype) != null) {
+					subtypes.addAll(directSubtypesHierarchy.get(directSubtype));
+				}
+			}
+		}
 		
-		for(int i = 0; i < directSubtypesSize; i++) {
-			String subtypeRuleName = rulesNames.get(directSubtypes.get(i));
+		int subtypesSize = subtypes.size();
+		int lastIndex = subtypesSize - 1;
+		
+		for(int i = 0; i < subtypesSize; i++) {
+			String subtypeRuleName = rulesNames.get(subtypes.get(i));
 			if(subtypeRuleName != null) {
 				bld.append(subtypeRuleName);
 				if(i < lastIndex) {
@@ -1112,14 +1123,7 @@ public final class DomlGrammarBuilder {
 			refBld.append(selectedElemRef.getName());
 			refBld.append("+=");
 			refBld.append(selectedElemRefValue);
-			if(isSelectedElemRefOptional) {
-				
-				refBld.append("*");
-			}
-			else {
-				refBld.append("+");
-			}
-			
+			refBld.append("+");
 			refBld.append(
 					(selectedElemEnclosingClose != null)
 					? selectedElemEnclosingClose
@@ -1214,16 +1218,10 @@ public final class DomlGrammarBuilder {
 			}
 			else {
 				refBld.append(refValue);
-			}
-			
-			if(isOptional) {
-				refBld.append("*");
-			}
-			else {
-				refBld.append("+");
-			}
+			}	
 			
 			if(keyword != null) {
+				refBld.append("+");
 				String enclosingClose = getEnclosingSymbol(rulesNames.get(eClassifier), eRef.getName(), false);
 				refBld.append(" ");
 				refBld.append(
@@ -1231,6 +1229,9 @@ public final class DomlGrammarBuilder {
 						? enclosingClose
 						: "'}'"
 						);
+			}
+			else {
+				refBld.append("*");
 			}
 		} // UpperBound == 1
 		else {
@@ -1311,14 +1312,7 @@ public final class DomlGrammarBuilder {
 			attrBld.append(eAttr.getName());
 			attrBld.append("+=");
 			attrBld.append(getAttributeTypeString(eAttr));
-			
-			if(isOptional) {
-				attrBld.append("* ");
-			}
-			else {
-				attrBld.append("+ ");
-			}
-			
+			attrBld.append("+");
 			attrBld.append(
 					(enclosingClose != null)
 					? enclosingClose
@@ -1781,6 +1775,7 @@ public final class DomlGrammarBuilder {
 		unchangeableRules.add("ListProperty returns commons::ListProperty:\n\tkey=ID('=' '[' values+=Property* ']')\n;\n");
 		unchangeableRules.add("Deployment returns commons::Deployment:\n\tcomponent=[commons::DeployableElement] '=>' node=[infra::InfrastructureElement]\n;\n");
 		unchangeableRules.add("InterfaceDefinition returns app::SoftwareInterface:\n\t{app::SoftwareInterface} name=ID DOMLElement ('@' endPoint=STRING)?\n;\n");
+		unchangeableRules.add("Location returns infra::Location:\r\n\t'loc' '{' 'region' region=STRING ('zone' zone=STRING)? '}'\r\n;\n");
 		unchangeableRules.add("MonitoringRule returns infra::MonitoringRule:\n\t'monitoring_rule' name=ID '{' DOMLElement\n\t\t(\n\t\t\t('cond' condition=STRING) &\n\t\t\t('strat' strategy=STRING) &\n\t\t\t('config' strategyConfigurationString=STRING)?\n\t\t)\n\t'}'\n;\n");
 		unchangeableRules.add("ContainerConfig returns infra::ContainerConfig:\n\t(\n\t\t('cont_port' container_port=INT) &\n\t\t('vm_port' vm_port=INT) &\n\t\t('iface' iface=[infra::NetworkInterface])?\n\t)\n;\n");
 		unchangeableRules.add("ContainerHostConfig returns infra::ContainerHostConfig:\n\t'host' host=[infra::ComputingNode] ('{'\n\t\t(\n\t\t\t('environment' '{' environment_variables+=SProperty+ '}' )?\n\t\t\t('cont_config' '{' configurations+=ContainerConfig '}')*\n\t\t)\n\t'}')?\n;\n");
