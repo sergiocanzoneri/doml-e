@@ -1047,7 +1047,15 @@ public final class DomlGrammarBuilder {
 		refBld.append("+=");
 		refBld.append(mainRefRuleName);
 		refBld.append(")");
-		refBld.append("*" + System.lineSeparator());
+		
+		if(isMainRefOptional) {
+			refBld.append("*");
+		}
+		else {
+			refBld.append("+");
+		}
+		
+		refBld.append(System.lineSeparator());
 		
 		int selectedElemRefLowerBound = selectedElemRef.getLowerBound();
 		int selectedElemRefUpperBound = selectedElemRef.getUpperBound();
@@ -1092,7 +1100,14 @@ public final class DomlGrammarBuilder {
 			refBld.append(selectedElemRef.getName());
 			refBld.append("+=");
 			refBld.append(selectedElemRefValue);
-			refBld.append("*");
+			if(isSelectedElemRefOptional) {
+				
+				refBld.append("*");
+			}
+			else {
+				refBld.append("+");
+			}
+			
 			refBld.append(
 					(selectedElemEnclosingClose != null)
 					? selectedElemEnclosingClose
@@ -1188,7 +1203,14 @@ public final class DomlGrammarBuilder {
 			else {
 				refBld.append(refValue);
 			}
-			refBld.append("*");
+			
+			if(isOptional) {
+				refBld.append("*");
+			}
+			else {
+				refBld.append("+");
+			}
+			
 			if(keyword != null) {
 				String enclosingClose = getEnclosingSymbol(rulesNames.get(eClassifier), eRef.getName(), false);
 				refBld.append(" ");
@@ -1229,7 +1251,7 @@ public final class DomlGrammarBuilder {
 		int lowerBound = eAttr.getLowerBound();
 		int upperBound = eAttr.getUpperBound();
 
-		boolean isMultiple, isOptional; //atLeastOne;
+		boolean isMultiple, isOptional;
 		
 		isOptional = lowerBound == 0;
 		isMultiple = upperBound == (-1) || upperBound > 1;
@@ -1277,7 +1299,14 @@ public final class DomlGrammarBuilder {
 			attrBld.append(eAttr.getName());
 			attrBld.append("+=");
 			attrBld.append(getAttributeTypeString(eAttr));
-			attrBld.append("* ");
+			
+			if(isOptional) {
+				attrBld.append("* ");
+			}
+			else {
+				attrBld.append("+ ");
+			}
+			
 			attrBld.append(
 					(enclosingClose != null)
 					? enclosingClose
@@ -1741,6 +1770,8 @@ public final class DomlGrammarBuilder {
 		unchangeableRules.add("Deployment returns commons::Deployment:\n\tcomponent=[commons::DeployableElement] '=>' node=[infra::InfrastructureElement]\n;\n");
 		unchangeableRules.add("InterfaceDefinition returns app::SoftwareInterface:\n\t{app::SoftwareInterface} name=ID DOMLElement ('@' endPoint=STRING)?\n;\n");
 		unchangeableRules.add("MonitoringRule returns infra::MonitoringRule:\n\t'monitoring_rule' name=ID '{' DOMLElement\n\t\t(\n\t\t\t('cond' condition=STRING) &\n\t\t\t('strat' strategy=STRING) &\n\t\t\t('config' strategyConfigurationString=STRING)?\n\t\t)\n\t'}'\n;\n");
+		unchangeableRules.add("ContainerConfig returns infra::ContainerConfig:\n\t(\n\t\t('cont_port' container_port=INT) &\n\t\t('vm_port' vm_port=INT) &\n\t\t('iface' iface=[infra::NetworkInterface])?\n\t)\n;\n");
+		unchangeableRules.add("ContainerHostConfig returns infra::ContainerHostConfig:\n\t'host' host=[infra::ComputingNode] ('{'\n\t\t(\n\t\t\t('environment' '{' environment_variables+=SProperty+ '}' )?\n\t\t\t('cont_config' '{' configurations+=ContainerConfig '}')*\n\t\t)\n\t'}')?\n;\n");
 		unchangeableRules.add("RequirementDefinition returns commons::Requirement:\n\t(=>RangedRequirement | =>EnumeratedRequirement | NormalRequirement)\n;\n");
 		unchangeableRules.add("fragment PartOfRequirement returns commons::Requirement:\n\tname=ID (description=(STRING | STATEMENTS))?\n;\n");
 		unchangeableRules.add("RangedRequirement returns commons::RangedRequirement: \n\tPartOfRequirement\n\t(\n\t\t('@' '{' predicatesOn+=[commons::DOMLElement]+ '}')?\n\t\t('min' min=FLOAT ('max' max=FLOAT)? | 'max' max=FLOAT)\n\t\t'=>' property=STRING\n\t)\n;\n");

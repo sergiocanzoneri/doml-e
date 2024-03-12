@@ -32,6 +32,13 @@ public enum DomlSpecialClasses {
 	DEPLOYMENT(DomlPackage.COMMONS, "Deployment", "Deployment"),
 	SOFTWARE_INTERFACE(DomlPackage.APPLICATION, "SoftwareInterface", "InterfaceDefinition"),
 	MONITORING_RULE(DomlPackage.INFRASTRUCTURE, "MonitoringRule", "MonitoringRule"),
+	CONTAINER_CONFIG(DomlPackage.INFRASTRUCTURE, "ContainerConfig", "ContainerConfig"),
+	/*
+	 * IMPORTANT NOTE: The "ContainerHostConfig" requires that the name of the
+	 * "ComputingNode" class defined in the Infrastructure Layer remains unchanged.
+	 * 
+	 */
+	CONTAINER_HOST_CONFIG(DomlPackage.INFRASTRUCTURE, "ContainerHostConfig", "ContainerHostConfig"),
 	REQUIREMENT(DomlPackage.COMMONS, "Requirement", "RequirementDefinition"),
 	RANGED_REQUIREMENT(DomlPackage.COMMONS, "RangedRequirement", "RangedRequirement"),
 	ENUMERATED_REQUIREMENT(DomlPackage.COMMONS, "EnumeratedRequirement", "EnumeratedRequirement"),
