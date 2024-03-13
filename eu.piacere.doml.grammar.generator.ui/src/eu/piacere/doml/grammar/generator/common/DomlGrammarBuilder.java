@@ -655,9 +655,7 @@ public final class DomlGrammarBuilder {
 		for(EClassifier directSubtype : directSubtypes) {
 			boolean isAbstract = (boolean)directSubtype.eGet(EcorePackage.eINSTANCE.getEClass_Abstract());
 			if(!isAbstract) {
-				if(directSubtypesHierarchy.get(directSubtype) != null) {
-					subtypes.addAll(directSubtypesHierarchy.get(directSubtype));
-				}
+				subtypes.addAll(findAllSubtypes(directSubtype));
 			}
 		}
 		
@@ -680,6 +678,22 @@ public final class DomlGrammarBuilder {
 		bld.append(";" + System.lineSeparator() + System.lineSeparator());
 		
 		return bld.toString();
+	}
+	
+	private List<EClassifier> findAllSubtypes(EClassifier eClassifier) {
+		List<EClassifier> subtypes = new ArrayList<EClassifier>();
+		List<EClassifier> directSubtypes = directSubtypesHierarchy.get(eClassifier);
+		
+		if(directSubtypes != null) {
+			
+			subtypes.addAll(directSubtypes);
+			
+			for(EClassifier subtype : directSubtypesHierarchy.get(eClassifier)) {
+				subtypes.addAll(findAllSubtypes(subtype));
+			}
+		}
+		
+		return subtypes;
 	}
 	
 	/*
