@@ -399,7 +399,7 @@ public final class DomlGrammarBuilder {
 							// CONCRETE CLASSES
 							else {
 								if(eClassifier.getName().equals(DomlSpecialClasses.DOML_MODEL.getClassName())) {
-									tmpBld.append(buildDomlModelRule(eClassifier));
+									tmpBld.insert(0, buildDomlModelRule(eClassifier));
 								}
 								else if(!DomlSpecialClasses.getClassNames().contains(eClassifier.getName())) {
 									tmpBld.append(buildConcreteClassRule(eClassifier));
